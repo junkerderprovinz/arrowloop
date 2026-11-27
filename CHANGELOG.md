@@ -8,6 +8,18 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.9.4 - 2026-11-27
+
+ArrowLoop 2.9.4 can run a job at start only when it is due, and a folder typed on the phone has to start with /.
+
+## ✨ Added
+
+- **Run a job at start only when it is due.** At program start in the job window has a third choice, When due, which runs a job at start only if its schedule came round while the program was off, the way `run-due` decides. The phone app already catches up on due jobs whenever it wakes, so its job form says that instead. Thanks to @danpeig for the idea ([#286](https://github.com/junkerderprovinz/arrowloop/issues/286)).
+
+## 🐛 Fixed
+
+- **A folder on the phone has to start with /.** A folder typed into a job's form on the phone, such as Pictures/Fotos, was saved as typed, and the job then looked for it inside ArrowLoop's own storage. The field now says that folders on the phone start with /, like /storage/emulated/0/DCIM, and Choose a folder picks one for you.
+
 ## 2.9.3 - 2026-11-27
 
 ArrowLoop 2.9.3 lets the Root target see every app's folder, keeps wide lists inside their card, opens the time picker in front of the page and keeps pairing working while another member reconnects.

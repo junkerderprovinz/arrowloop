@@ -1,0 +1,1 @@
+The job form explains that the phone catches up on due jobs by itself, and a folder typed on the phone has to start with /.

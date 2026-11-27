@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.9.4" date="2026-11-27">
+      <description>
+        <p>ArrowLoop 2.9.4 can run a job at start only when it is due, and a folder typed on the phone has to start with /.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.9.4</url>
+    </release>
     <release version="2.9.3" date="2026-11-27">
       <description>
         <p>ArrowLoop 2.9.3 lets the Root target see every app's folder, keeps wide lists inside their card, opens the time picker in front of the page and keeps pairing working while another member reconnects.</p>
