@@ -29,6 +29,7 @@ import { sideName } from '../lib/entryLabel'
 import { useGoTo } from '../lib/goTo'
 import { translateSide, useT } from '../lib/i18n'
 import { jobStatus } from '../lib/jobList'
+import { jobMenu } from '../lib/jobMenu'
 import { useLive } from '../lib/live'
 import { useLiveTick } from '../lib/liveTick'
 import { usePlaces } from '../lib/places'
@@ -70,7 +71,7 @@ export function JobPage({ name }: { name: string }) {
   const [removing, setRemoving] = useState(false)
   // A job saved under a new name, which the engine lists a moment after the file has it.
   const [renamed, setRenamed] = useState<string | null>(null)
-  const card = useCardFromAddress(live.jobs.some((j) => j.name === name))
+  const [asked, ask] = useCardAsked(live.jobs.some((j) => j.name === name))
 
   const job = live.jobs.find((j) => j.name === name)
   const at = config.jobs?.findIndex((j) => j.name === name) ?? -1
@@ -118,21 +119,22 @@ export function JobPage({ name }: { name: string }) {
                 />
               </span>
             )}
-            {at !== -1 && (
-              <Menu
-                label={t('list.more')}
-                labelKey="list.more"
-                items={[
-                  {
-                    label: t('edit.duplicate'),
-                    labelKey: 'edit.duplicate',
-                    onSelect: () => setEditing({ at: config.duplicate(at), added: true }),
-                  },
-                  { label: t('edit.openTrash'), labelKey: 'edit.openTrash', onSelect: () => goTo({ tab: 'trash', job: name }) },
-                  { label: t('edit.remove'), labelKey: 'edit.remove', onSelect: () => setRemoving(true) },
-                ]}
-              />
-            )}
+            <Menu
+              label={t('list.more')}
+              labelKey="list.more"
+              items={jobMenu(
+                t,
+                {
+                  duplicate: at === -1 ? undefined : () => setEditing({ at: config.duplicate(at), added: true }),
+                  preview: () => ask('preview'),
+                  check: () => ask('check'),
+                  dupes: () => ask('dupes'),
+                  trash: () => goTo({ tab: 'trash', job: name }),
+                  remove: at === -1 ? undefined : () => setRemoving(true),
+                },
+                true,
+              )}
+            />
             {/* What the page is for, so it is its one filled button, the way
                 forward at the end of the row. */}
             <StartStop job={job} />
@@ -150,12 +152,13 @@ export function JobPage({ name }: { name: string }) {
       )}
       <RunsCard job={job} event={live.progress[name]} speed={live.speeds[name]} />
       <FilesCard job={job} />
+      {/* A card asked for again starts afresh, as its button would. */}
       <section id={JOB_CARDS.preview} tabIndex={-1} className="outline-none">
-        <PreviewCard job={name} start={card === 'preview'} onDone={live.onSaved} />
+        <PreviewCard key={asked.times.preview} job={name} start={asked.card === 'preview'} onDone={live.onSaved} />
       </section>
       <section id={JOB_CARDS.check} tabIndex={-1} className="outline-none">
         <Card title={t('job.checkCard')} hueIndex={3}>
-          <CheckPanel job={name} start={card === 'check'} />
+          <CheckPanel key={asked.times.check} job={name} start={asked.card === 'check'} />
         </Card>
       </section>
       <section id={JOB_CARDS.dupes} tabIndex={-1} className="outline-none">
@@ -208,23 +211,31 @@ function StartStop({ job }: { job: Job }) {
   )
 }
 
+type CardAsked = { card: JobPageCard | null; times: Record<JobPageCard, number> }
+
 /**
- * The card a link from the jobs page asked for with `?card=`, scrolled into
- * view with its first control focused once the job is there, or the card
- * itself while its work keeps the controls disabled. The address is then put
- * back, so a reload does not start the card's work again.
+ * The card somebody asked for, by a link from the jobs page with `?card=` or
+ * from More, scrolled into view with its first control focused once the job
+ * is there, or the card itself while its work keeps the controls disabled. A
+ * link's address is then put back, so a reload does not start the card's work
+ * again. `times` counts the asks per card, so a card asked for again can start
+ * over.
  *
  * The cards above are still loading and arriving with their entrance, which
  * keeps the browser from holding the scroll position, so the card is held in
  * view for a moment, until somebody scrolls or presses anything first.
  */
-function useCardFromAddress(ready: boolean): JobPageCard | null {
+function useCardAsked(ready: boolean): [CardAsked, (card: JobPageCard) => void] {
   const { pathname, search } = useLocation()
-  const [card] = useState(() => readJobCard(search.get('card')))
+  const [asked, setAsked] = useState<CardAsked>(() => ({
+    card: readJobCard(search.get('card')),
+    times: { preview: 0, check: 0, dupes: 0 },
+  }))
 
   useEffect(() => {
+    const { card } = asked
     if (!card || !ready) return
-    navigate(pathname, { replace: true })
+    if (new URLSearchParams(window.location.search).has('card')) navigate(pathname, { replace: true })
     const el = document.getElementById(JOB_CARDS[card])
     if (!el) return
     const control = el.querySelector<HTMLElement>('button:not(:disabled)') ?? el
@@ -244,9 +255,10 @@ function useCardFromAddress(ready: boolean): JobPageCard | null {
       stop()
       for (const input of inputs) window.removeEventListener(input, stop, { capture: true })
     }
-  }, [card, ready, pathname])
+  }, [asked, ready, pathname])
 
-  return card
+  const ask = (card: JobPageCard) => setAsked((was) => ({ card, times: { ...was.times, [card]: was.times[card] + 1 } }))
+  return [asked, ask]
 }
 
 /**
