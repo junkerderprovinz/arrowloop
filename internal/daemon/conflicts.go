@@ -37,7 +37,13 @@ type Unread struct {
 
 // conflictWait bounds reading one job's conflicts, since rclone waits minutes
 // on a server that accepts the connection and never answers.
-var conflictWait = time.Minute
+const conflictWait = time.Minute
+
+// conflictDeadline puts the bound on one read. A test swaps it to decide when
+// a read runs out of time.
+var conflictDeadline = func(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(ctx, conflictWait)
+}
 
 // Conflicts lists the open conflicts of every job that writes both ways, or of
 // the one job named, oldest first, then by job and path. A job whose sides
@@ -64,10 +70,10 @@ func (r *Runner) Conflicts(ctx context.Context, only string, connect bool) ([]Co
 	var wg sync.WaitGroup
 	for i, j := range jobs {
 		wg.Go(func() {
-			ctx, cancel := context.WithTimeout(ctx, conflictWait)
+			ctx, cancel := conflictDeadline(ctx)
 			defer cancel()
 			opens[i], errs[i] = r.conflictsOf(ctx, j, connect)
-			if errs[i] != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			if errs[i] != nil && errors.Is(context.Cause(ctx), context.DeadlineExceeded) {
 				errs[i] = fmt.Errorf("no answer within %s: %w", conflictWait, errs[i])
 			}
 		})
