@@ -29,6 +29,9 @@ Font Awesome, drawn to one convention and at one weight.
 under CC BY 3.0 at <https://flatpak.org/press>; the path is Simple Icons' (the
 collection itself is CC0 1.0).
 
+**Simple Icons** (<https://simpleicons.org>), for `truenas.txt`: TrueNAS's
+mark, its `truenas.svg`. **CC0 1.0** for the path data.
+
 The shared set these files are copied from also has F-Droid's mark (CC0 1.0) and
 Vivaldi's, both from Simple Icons. ArrowLoop has no button for either, so they
 are not here.
