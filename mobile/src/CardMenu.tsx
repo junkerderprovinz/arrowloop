@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Glyph } from "./glyphs";
 import { useT } from "./i18n";
 import type { CardEntry } from "./jobMenu";
-import { menuRoom } from "./layout";
-import { endEdge, raised, space, text, TOUCH } from "./theme";
+import { menuRoom, menuTop } from "./layout";
+import { endEdge, raised, softOn, space, text, TOUCH } from "./theme";
 import { Button, Press, useTheme } from "./ui";
 
 export type { CardAction, CardEntry } from "./jobMenu";
@@ -30,6 +31,7 @@ export function CardMenu({
   const { t } = useT();
   const { p, corners } = useTheme();
   const screen = useWindowDimensions();
+  const inset = useSafeAreaInsets();
   const button = useRef<View>(null);
   const [at, setAt] = useState<{ top: number; edge: { left?: number; right?: number }; room: number } | null>(null);
 
@@ -46,8 +48,7 @@ export function CardMenu({
         rows * (TOUCH + space.xs) + lines * (SEPARATOR + space.xs) + space.sm * 2 + (note ? NOTE_HEIGHT : 0);
       const edge = endEdge(x, w, screen.width);
       setAt({
-        // Above the button when there is no room below it.
-        top: y + h + space.xs + height > screen.height ? Math.max(space.sm, y - height) : y + h + space.xs,
+        top: menuTop({ y, height: h }, height, screen.height, inset.top),
         edge,
         room: menuRoom(screen.width, edge.left ?? edge.right ?? 0, space.lg),
       });
@@ -91,7 +92,7 @@ export function CardMenu({
             {note ? <Text style={[styles.note, { color: p.textMuted }]}>{note}</Text> : null}
             {items.map((item, i) =>
               item === "-" ? (
-                <View key={`-${i}`} style={[styles.separator, { backgroundColor: p.border }]} />
+                <View key={`-${i}`} style={[styles.separator, { backgroundColor: softOn(p.text, 0.14) }]} />
               ) : (
                 <Press
                   key={item.label}
@@ -124,7 +125,7 @@ export function CardMenu({
   );
 }
 
-const SEPARATOR = StyleSheet.hairlineWidth;
+const SEPARATOR = 1;
 // One line of caption text and the gap under it, for placing the sheet.
 const NOTE_HEIGHT = 18 + space.xs;
 
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   // Measured at its own width rather than flex: 1, whose zero basis lets the
   // sheet shrink to its minimum and cut the label.
   rowText: { flexGrow: 1, flexShrink: 1, fontSize: text.body },
-  separator: { height: SEPARATOR, marginHorizontal: space.sm, opacity: 0.6 },
+  separator: { height: SEPARATOR, marginHorizontal: space.sm },
   note: { fontSize: text.subline, lineHeight: 18, paddingHorizontal: space.sm },
   off: { opacity: 0.5 },
 });

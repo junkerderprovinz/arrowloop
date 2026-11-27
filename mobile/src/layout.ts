@@ -96,6 +96,18 @@ export function menuRoom(window: number, offset: number, gutter: number): number
 }
 
 /**
+ * Returns where a menu of `menu` points opens beside the button it belongs
+ * to: under it, or above it when the screen has no room below, though never
+ * up under the status bar.
+ */
+export function menuTop(button: { y: number; height: number }, menu: number, screen: number, topInset: number): number {
+  // The theme's xs and sm steps, which this file cannot import.
+  const below = button.y + button.height + 4;
+  if (below + menu <= screen) return below;
+  return Math.max(topInset + 8, button.y - menu);
+}
+
+/**
  * Whether a page shows its title row, and the room it keeps above itself in
  * its place. Beside the side bar a tab's first page drops the row, as the
  * web's pages have none, and then has to clear the status bar itself. A page

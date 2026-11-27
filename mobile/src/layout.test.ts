@@ -11,6 +11,7 @@ import {
   WIDE_COLUMN,
   WIDE_ROOM,
   menuRoom,
+  menuTop,
   pageRoom,
   sceneBox,
   titleRow,
@@ -130,6 +131,15 @@ test("a side panel in a narrow window leaves the gutter on both sides", () => {
 
 test("a menu at the end of a phone may reach across to the far gutter", () => {
   assert.equal(menuRoom(411, 85, PAGE_GUTTER), 411 - 85 - PAGE_GUTTER);
+});
+
+test("a menu opens under its button when there is room below it", () => {
+  assert.equal(menuTop({ y: 200, height: 56 }, 400, 2400, 48), 200 + 56 + 4);
+});
+
+test("a menu with no room below opens above its button, clear of the status bar", () => {
+  assert.equal(menuTop({ y: 1100, height: 56 }, 1300, 2400, 48), 48 + 8);
+  assert.equal(menuTop({ y: 1900, height: 56 }, 600, 2400, 48), 1900 - 600);
 });
 
 test("a menu on a tablet may grow past a phone's width", () => {
