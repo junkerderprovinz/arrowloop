@@ -594,6 +594,7 @@ const ca: Translations = {
   'atStart.alwaysHint': 'La tasca s\'executa una vegada cada cop que s\'inicia el programa.',
   'atStart.due': 'Quan toqui',
   'atStart.dueHint': 'La tasca només s\'executa si la planificació ha arribat des de l\'última vegada que va funcionar, o si no s\'ha executat mai. Després d\'un error espera fins que toqui el següent intent. Sense planificació no s\'executa en iniciar.',
+  'edit.atStartPhone': 'El telèfon recupera tot sol les tasques pendents cada vegada que es desperta, així que no necessita cap opció per a l\'inici del programa.',
   'edit.emptyDirsHint': 'Una carpeta amb fitxers a dins viatja igualment. Una de buida no té res que la impliqui, així que necessita un registre propi. Desactivat per a un cubell d\'emmagatzematge, que no té carpetes de debò.',
   'edit.metadataHint': 'Els permisos, el propietari i els atributs estesos viatgen amb les dades allà on totes dues bandes els puguin desar.',
   'edit.unnamed': 'sense nom',

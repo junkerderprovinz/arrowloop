@@ -594,6 +594,7 @@ const fi: Translations = {
   'atStart.alwaysHint': 'Työ ajetaan kerran aina, kun ohjelma käynnistyy.',
   'atStart.due': 'Kun on aika',
   'atStart.dueHint': 'Työ ajetaan vain, jos sen aikataulun mukainen aika on tullut viimeisen onnistuneen ajon jälkeen tai jos sitä ei ole koskaan ajettu. Virheen jälkeen se odottaa, kunnes seuraavan yrityksen aika tulee. Ilman aikataulua sitä ei ajeta käynnistyksessä.',
+  'edit.atStartPhone': 'Puhelin hoitaa erääntyneet työt itse aina herätessään, joten se ei tarvitse asetusta ohjelman käynnistymiselle.',
   'edit.emptyDirsHint': 'Kansio, jossa on tiedostoja, kulkee mukana joka tapauksessa. Tyhjällä ei ole mitään, mikä viittaisi siihen, joten se tarvitsee oman merkintänsä. Pois päältä ämpärille, jolla ei ole oikeita kansioita.',
   'edit.metadataHint': 'Oikeudet, omistaja ja laajennetut määritteet kulkevat tietojen mukana kaikkialla, missä molemmat puolet osaavat säilyttää ne.',
   'edit.unnamed': 'nimetön',

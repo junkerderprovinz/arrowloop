@@ -594,6 +594,7 @@ const pl: Translations = {
   'atStart.alwaysHint': 'Zadanie uruchamia się raz przy każdym starcie programu.',
   'atStart.due': 'Gdy przypada',
   'atStart.dueHint': 'Zadanie uruchamia się tylko wtedy, gdy od ostatniego udanego przebiegu przypadł termin z harmonogramu albo gdy nigdy jeszcze nie działało. Po błędzie czeka, aż przypadnie termin kolejnej próby. Bez harmonogramu nie uruchamia się przy starcie.',
+  'edit.atStartPhone': 'Telefon sam nadrabia zadania, na które przypadł termin, za każdym razem, gdy się wybudza, więc nie potrzebuje ustawienia dla uruchomienia programu.',
   'edit.emptyDirsHint': 'Folder z plikami wędruje i tak. Pusty nie ma nic, co by go zapowiadało, więc potrzebuje własnego wpisu. Wyłączone dla kubełka, który nie ma prawdziwych folderów.',
   'edit.metadataHint': 'Uprawnienia, właściciel i atrybuty rozszerzone wędrują razem z danymi wszędzie tam, gdzie obie strony potrafią je przechować.',
   'edit.unnamed': 'bez nazwy',

@@ -594,6 +594,7 @@ const lv: Translations = {
   'atStart.alwaysHint': 'Uzdevums izpildās vienreiz katru reizi, kad programma startē.',
   'atStart.due': 'Kad pienācis laiks',
   'atStart.dueHint': 'Uzdevums izpildās tikai tad, ja kopš pēdējās veiksmīgās izpildes pienācis grafika laiks vai ja tas nekad nav izpildīts. Pēc kļūdas tas gaida, līdz pienāk nākamā mēģinājuma laiks. Bez grafika startēšanas brīdī tas neizpildās.',
+  'edit.atStartPhone': 'Tālrunis katru reizi, kad pamostas, pats izpilda uzdevumus, kuriem pienācis laiks, tāpēc programmas startēšanas iestatījums tam nav vajadzīgs.',
   'edit.emptyDirsHint': 'Mape ar failiem ceļo tāpat. Tukšai nav nekā, kas uz to norādītu, tāpēc tai vajadzīgs savs ieraksts. Izslēdziet krātuves spainim, kuram nav īstu mapju.',
   'edit.metadataHint': 'Tiesības, īpašnieks un paplašinātie atribūti ceļo līdzi datiem visur, kur abas puses spēj tos saglabāt.',
   'edit.unnamed': 'bez nosaukuma',

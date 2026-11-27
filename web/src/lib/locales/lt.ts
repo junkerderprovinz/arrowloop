@@ -594,6 +594,7 @@ const lt: Translations = {
   'atStart.alwaysHint': 'Užduotis paleidžiama vieną kartą kiekvieną kartą paleidus programą.',
   'atStart.due': 'Kai atėjo laikas',
   'atStart.dueHint': 'Užduotis paleidžiama tik tada, jei nuo paskutinio sėkmingo paleidimo atėjo tvarkaraščio laikas arba jei ji dar niekada nebuvo paleista. Po klaidos ji laukia, kol ateis kito bandymo laikas. Be tvarkaraščio paleidus programą ji nepaleidžiama.',
+  'edit.atStartPhone': 'Telefonas pats pasiveja užduotis, kurioms atėjo laikas, kiekvieną kartą pabudęs, todėl programos paleidimo nustatymo jam nereikia.',
   'edit.emptyDirsHint': 'Aplankas su failais keliauja ir šiaip. Tuščias neturi nieko, kas jį nurodytų, todėl jam reikia atskiro įrašo. Išjunkite saugyklos kibirui, kuris tikrų aplankų neturi.',
   'edit.metadataHint': 'Teisės, savininkas ir išplėstiniai atributai keliauja kartu su duomenimis visur, kur abi pusės gali juos išsaugoti.',
   'edit.unnamed': 'be pavadinimo',

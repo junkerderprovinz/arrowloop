@@ -815,6 +815,7 @@ export const en = {
   'atStart.due': 'When due',
   'atStart.dueHint':
     'The job runs only if its schedule came round since it last worked, or if it has never run. After a failure it waits until the next try is due. Without a schedule it does not run at start.',
+  'edit.atStartPhone': 'The phone catches up on due jobs by itself whenever it wakes, so it needs no setting for program start.',
   'edit.emptyDirsHint':
     'A folder with files in it travels anyway. An empty one has nothing to imply it, so it needs a record of its own. Off for a bucket, which has no real folders.',
   'edit.metadataHint': 'Permissions and ownership travel with the bytes where both sides can store them, typically on a Linux server or a NAS. Android\'s own storage sets its own permissions whatever arrives, so on a phone-to-phone job this changes nothing.',
@@ -3395,6 +3396,7 @@ export const de: Translations = {
   'atStart.due': 'Wenn fällig',
   'atStart.dueHint':
     'Der Auftrag läuft nur, wenn sein Zeitplan seit dem letzten gelungenen Lauf dran war oder er noch nie gelaufen ist. Nach einem Fehler wartet er, bis der nächste Versuch fällig ist. Ohne Zeitplan läuft er beim Start nicht.',
+  'edit.atStartPhone': 'Das Telefon holt fällige Aufträge bei jedem Aufwachen von selbst nach und braucht daher keine Einstellung für den Programmstart.',
   'edit.emptyDirsHint':
     'Ein Ordner mit Dateien darin wandert ohnehin mit. Ein leerer hat nichts, was ihn andeutet, und braucht daher einen eigenen Vermerk. Bei einem Eimer aus, der kennt keine echten Ordner.',
   'edit.metadataHint': 'Rechte und Eigentümer wandern mit den Daten mit, wo beide Seiten sie speichern können, meist auf einem Linux-Server oder einem NAS. Androids eigener Speicher setzt seine Rechte selbst, egal was ankommt; auf einem Auftrag von Telefon zu Telefon ändert das also nichts.',

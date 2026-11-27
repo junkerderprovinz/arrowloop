@@ -594,6 +594,7 @@ const ms: Translations = {
   'atStart.alwaysHint': 'Tugas berjalan sekali setiap kali program bermula.',
   'atStart.due': 'Apabila tiba masanya',
   'atStart.dueHint': 'Tugas hanya berjalan jika masa dalam jadualnya telah tiba sejak kali terakhir ia berjaya, atau jika ia tidak pernah berjalan. Selepas gagal, ia menunggu sehingga tiba masa cubaan seterusnya. Tanpa jadual, ia tidak berjalan semasa program bermula.',
+  'edit.atStartPhone': 'Telefon menyelesaikan sendiri tugas yang sudah tiba masanya setiap kali ia bangun, jadi ia tidak perlu tetapan untuk permulaan program.',
   'edit.emptyDirsHint': 'Folder yang berisi fail berpindah dengan sendirinya. Folder kosong tiada apa-apa yang menyiratkannya, jadi ia memerlukan rekod tersendiri. Matikan bagi baldi simpanan yang tiada folder sebenar.',
   'edit.metadataHint': 'Kebenaran, pemilik dan atribut lanjutan berpindah bersama datanya di mana-mana kedua-dua belah mampu menyimpannya.',
   'edit.unnamed': 'tanpa nama',

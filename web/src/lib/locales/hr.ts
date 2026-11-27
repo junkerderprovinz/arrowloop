@@ -594,6 +594,7 @@ const hr: Translations = {
   'atStart.alwaysHint': 'Zadatak se pokreće jednom pri svakom pokretanju programa.',
   'atStart.due': 'Kad je na redu',
   'atStart.dueHint': 'Zadatak se pokreće samo ako je od posljednjeg uspješnog pokretanja došlo vrijeme po rasporedu ili ako se nikad nije pokrenuo. Nakon greške čeka dok ne dođe red na sljedeći pokušaj. Bez rasporeda se pri pokretanju ne pokreće.',
+  'edit.atStartPhone': 'Telefon sam nadoknađuje zadatke koji su na redu svaki put kad se probudi, pa mu ne treba postavka za pokretanje programa.',
   'edit.emptyDirsHint': 'Mapa s datotekama putuje ionako. Prazna nema ničega što bi na nju upućivalo pa joj treba vlastiti zapis. Isključeno za spremišnu kantu koja nema pravih mapa.',
   'edit.metadataHint': 'Prava, vlasnik i prošireni atributi putuju s podacima svugdje gdje ih obje strane mogu pohraniti.',
   'edit.unnamed': 'bez naziva',

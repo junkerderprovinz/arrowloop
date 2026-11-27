@@ -366,11 +366,10 @@ catches up what the machine missed while it was off.
 In the job window both are under **At program start**: **Off**, **Always**
 (`true`) and **When due** (`"due"`).
 
-On the phone the runs at start happen when the app starts the engine, once the
-app has told the engine whether the phone is charging and which network it is
-on. The wake-ups every fifteen minutes already run whatever is due, so the
-phone offers **Off** and **When due**, and **Always** only on a job that
-already has it.
+The phone app has no such choice. It wakes every fifteen minutes and whenever
+it is opened, and each time it runs whatever is due, so it catches up on its
+own. A job that brings `runAtStart` from another machine keeps it when it is
+edited on the phone.
 
 ## A job never overlaps itself
 

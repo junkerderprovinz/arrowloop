@@ -594,6 +594,7 @@ const eu: Translations = {
   'atStart.alwaysHint': 'Lanak behin exekutatzen da programa abiatzen den bakoitzean.',
   'atStart.due': 'Garaia denean',
   'atStart.dueHint': 'Lana bakarrik exekutatzen da azken aldiz ondo exekutatu zenetik ordutegiko unea iritsi bada, edo inoiz exekutatu ez bada. Huts egin ondoren, hurrengo saiakeraren garaia iritsi arte itxaroten du. Ordutegirik gabe ez da abiatzean exekutatzen.',
+  'edit.atStartPhone': 'Telefonoak bere kabuz berreskuratzen ditu garaia duten lanak esnatzen den bakoitzean, beraz ez du programa abiatzeko ezarpenik behar.',
   'edit.emptyDirsHint': 'Fitxategiak dituen karpeta berdin doa. Hutsak ez du ezer harekin lotzen duenik, beraz bere erregistroa behar du. Itzalita benetako karpetarik ez duen biltegi-ontzi baterako.',
   'edit.metadataHint': 'Baimenak, jabea eta atributu hedatuak datuekin batera doaz bi aldeek gorde ditzaketen leku guztietan.',
   'edit.unnamed': 'izenik gabe',

@@ -594,6 +594,7 @@ const id: Translations = {
   'atStart.alwaysHint': 'Tugas berjalan sekali setiap kali program dimulai.',
   'atStart.due': 'Saat jatuh tempo',
   'atStart.dueHint': 'Tugas hanya berjalan jika jadwalnya sudah tiba sejak terakhir kali berhasil, atau jika belum pernah berjalan. Setelah gagal, tugas menunggu sampai percobaan berikutnya tiba waktunya. Tanpa jadwal, tugas tidak berjalan saat program dimulai.',
+  'edit.atStartPhone': 'Ponsel menyusul sendiri tugas yang sudah jatuh tempo setiap kali bangun, jadi tidak perlu pengaturan untuk saat program dimulai.',
   'edit.emptyDirsHint': 'Folder berisi berkas ikut berpindah dengan sendirinya. Folder kosong tidak punya apa pun yang menyiratkannya, jadi ia butuh catatan tersendiri. Matikan untuk ember penyimpanan yang tidak punya folder sungguhan.',
   'edit.metadataHint': 'Hak akses, pemilik dan atribut tambahan ikut berpindah bersama datanya di mana pun kedua sisi mampu menyimpannya.',
   'edit.unnamed': 'tanpa nama',

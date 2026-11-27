@@ -594,6 +594,7 @@ const sv: Translations = {
   'atStart.alwaysHint': 'Jobbet körs en gång varje gång programmet startar.',
   'atStart.due': 'När det är dags',
   'atStart.dueHint': 'Jobbet körs bara om schemat har kommit fram sedan senaste lyckade körningen, eller om det aldrig har körts. Efter ett fel väntar det tills nästa försök är dags. Utan schema körs det inte vid start.',
+  'edit.atStartPhone': 'Telefonen tar själv igen jobb som är dags varje gång den vaknar, så den behöver ingen inställning för programstart.',
   'edit.emptyDirsHint': 'En mapp med filer i följer med ändå. En tom har ingenting som antyder den och behöver därför en egen anteckning. Av för en bucket, som inte har riktiga mappar.',
   'edit.metadataHint': 'Rättigheter, ägare och utökade attribut följer med data överallt där båda sidor kan lagra dem.',
   'edit.unnamed': 'namnlöst',

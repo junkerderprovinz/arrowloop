@@ -594,6 +594,7 @@ const tr: Translations = {
   'atStart.alwaysHint': 'İş, program her başladığında bir kez çalışır.',
   'atStart.due': 'Vakti geldiyse',
   'atStart.dueHint': 'İş yalnızca son başarılı çalışmasından bu yana zamanlamadaki vakit geldiyse ya da hiç çalışmadıysa çalışır. Bir hatadan sonra bir sonraki denemenin vakti gelene kadar bekler. Zamanlaması yoksa başlarken çalışmaz.',
+  'edit.atStartPhone': 'Telefon her uyandığında vakti gelen işleri kendiliğinden yetiştirir, bu yüzden program başlangıcı için bir ayara ihtiyacı yoktur.',
   'edit.emptyDirsHint': 'İçinde dosya olan bir klasör zaten gider. Boş olanın onu ima eden hiçbir şeyi yoktur, bu yüzden kendi kaydına ihtiyaç duyar. Gerçek klasörü olmayan bir kova için kapalı.',
   'edit.metadataHint': 'İzinler, sahiplik ve genişletilmiş öznitelikler, iki tarafın da saklayabildiği her yerde verilerle birlikte gider.',
   'edit.unnamed': 'adsız',

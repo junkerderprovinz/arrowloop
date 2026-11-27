@@ -594,6 +594,7 @@ const is: Translations = {
   'atStart.alwaysHint': 'Verkið keyrir einu sinni í hvert sinn sem forritið ræsist.',
   'atStart.due': 'Þegar komið er að því',
   'atStart.dueHint': 'Verkið keyrir aðeins ef tími samkvæmt áætlun er kominn síðan það tókst síðast, eða ef það hefur aldrei keyrt. Eftir villu bíður það þar til komið er að næstu tilraun. Án tímaáætlunar keyrir það ekki við ræsingu.',
+  'edit.atStartPhone': 'Síminn vinnur sjálfur upp verk sem komið er að í hvert sinn sem hann vaknar, svo hann þarf enga stillingu fyrir ræsingu forritsins.',
   'edit.emptyDirsHint': 'Mappa með skrám í ferðast hvort sem er. Tóm mappa hefur ekkert sem gefur hana til kynna og þarf því sína eigin færslu. Slökkt fyrir geymslufötu sem hefur engar raunverulegar möppur.',
   'edit.metadataHint': 'Réttindi, eigandi og útvíkkuð eigindi ferðast með gögnunum alls staðar þar sem báðar hliðar geta geymt þau.',
   'edit.unnamed': 'ónefnt',

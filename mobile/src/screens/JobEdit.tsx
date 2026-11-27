@@ -68,8 +68,6 @@ import {
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
-import { atStartOf, runAtStartFor, type AtStartChoice } from "../../../web/src/lib/atStart";
-import { phoneAtStart } from "../atStart";
 import { overNetwork } from "../../../web/src/lib/localTarget";
 import { vpnChoiceNote, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
@@ -486,18 +484,10 @@ export function JobEdit() {
             />
           </FromGlobal>
         </View>
-        <ChoiceRow<AtStartChoice>
-          label={t("edit.runAtStart")}
-          bar
-          hue={1}
-          value={atStartOf(job.runAtStart)}
-          onChange={(choice) => set({ runAtStart: runAtStartFor(choice) }, true)}
-          options={phoneAtStart(job.runAtStart).map((c) => ({
-            value: c,
-            label: t(`atStart.${c}`),
-            hint: t(`atStart.${c}Hint`),
-          }))}
-        />
+        {/* No choice for the program start: the wake-ups run whatever is due,
+            and a job's runAtStart from another machine is saved back as it
+            came. */}
+        <Body muted>{t("edit.atStartPhone")}</Body>
       </Section>
 
       {/* How the two sides are brought together. A two-way job has only one

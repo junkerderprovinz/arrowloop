@@ -594,6 +594,7 @@ const it: Translations = {
   'atStart.alwaysHint': 'Il lavoro viene eseguito una volta a ogni avvio del programma.',
   'atStart.due': 'Quando è dovuto',
   'atStart.dueHint': 'Il lavoro viene eseguito solo se la sua pianificazione è arrivata dall\'ultima esecuzione riuscita, o se non è mai stato eseguito. Dopo un errore aspetta finché non è il momento del tentativo successivo. Senza pianificazione non viene eseguito all\'avvio.',
+  'edit.atStartPhone': 'Il telefono recupera da solo i lavori dovuti ogni volta che si risveglia, quindi non serve un\'impostazione per l\'avvio del programma.',
   'edit.emptyDirsHint': 'Una cartella con dentro dei file viaggia comunque. Una vuota non ha nulla che la implichi, quindi le serve un registro proprio. Da disattivare per un bucket, che non ha cartelle vere.',
   'edit.metadataHint': 'Permessi, proprietario e attributi estesi viaggiano insieme ai dati ovunque i due lati possano conservarli.',
   'edit.unnamed': 'senza nome',

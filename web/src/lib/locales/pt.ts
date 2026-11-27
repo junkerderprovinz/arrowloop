@@ -594,6 +594,7 @@ const pt: Translations = {
   'atStart.alwaysHint': 'A tarefa é executada uma vez sempre que o programa arranca.',
   'atStart.due': 'Quando for altura',
   'atStart.dueHint': 'A tarefa só é executada se o agendamento chegou desde a última vez que funcionou, ou se nunca foi executada. Após uma falha, espera até ser altura da tentativa seguinte. Sem agendamento, não é executada ao iniciar.',
+  'edit.atStartPhone': 'O telemóvel recupera sozinho as tarefas em atraso sempre que acorda, por isso não precisa de nenhuma opção para o arranque do programa.',
   'edit.emptyDirsHint': 'Uma pasta com ficheiros viaja de qualquer maneira. Uma vazia não tem nada que a implique, por isso precisa de um registo próprio. Desligado para um bucket, que não tem pastas verdadeiras.',
   'edit.metadataHint': 'As permissões, o proprietário e os atributos estendidos viajam com os dados sempre que ambos os lados os consigam guardar.',
   'edit.unnamed': 'sem nome',

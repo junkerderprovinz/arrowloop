@@ -594,6 +594,7 @@ const es: Translations = {
   'atStart.alwaysHint': 'La tarea se ejecuta una vez cada vez que se inicia el programa.',
   'atStart.due': 'Cuando toque',
   'atStart.dueHint': 'La tarea solo se ejecuta si su programación llegó desde la última vez que funcionó, o si nunca se ha ejecutado. Tras un fallo espera hasta que toque el siguiente intento. Sin programación no se ejecuta al iniciar.',
+  'edit.atStartPhone': 'El teléfono recupera por sí solo las tareas pendientes cada vez que se despierta, así que no necesita ninguna opción para el inicio del programa.',
   'edit.emptyDirsHint': 'Una carpeta con archivos viaja de todos modos. Una vacía no tiene nada que la implique, así que necesita su propio registro. Desactivado para un contenedor, que no tiene carpetas reales.',
   'edit.metadataHint': 'Los permisos, el propietario y los atributos extendidos viajan con los datos siempre que ambos lados puedan guardarlos.',
   'edit.unnamed': 'sin nombre',

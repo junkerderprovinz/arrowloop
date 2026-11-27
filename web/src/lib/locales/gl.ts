@@ -594,6 +594,7 @@ const gl: Translations = {
   'atStart.alwaysHint': 'A tarefa execútase unha vez cada vez que arrinca o programa.',
   'atStart.due': 'Cando toque',
   'atStart.dueHint': 'A tarefa só se executa se a súa planificación chegou desde a última vez que funcionou, ou se nunca se executou. Despois dun fallo agarda ata que toque o seguinte intento. Sen planificación non se executa ao arrincar.',
+  'edit.atStartPhone': 'O teléfono recupera por si só as tarefas pendentes cada vez que esperta, así que non precisa ningunha opción para o arranque do programa.',
   'edit.emptyDirsHint': 'Un cartafol con ficheiros dentro viaxa igual. Un baleiro non ten nada que o implique, así que precisa un rexistro propio. Desactivado para un balde de almacenamento, que non ten cartafoles de verdade.',
   'edit.metadataHint': 'Os permisos, o propietario e os atributos estendidos viaxan cos datos alí onde os dous lados os poidan gardar.',
   'edit.unnamed': 'sen nome',

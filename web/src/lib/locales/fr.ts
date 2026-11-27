@@ -594,6 +594,7 @@ const fr: Translations = {
   'atStart.alwaysHint': 'La tâche s\'exécute une fois à chaque démarrage du programme.',
   'atStart.due': 'Si elle est due',
   'atStart.dueHint': 'La tâche ne s\'exécute que si sa planification est arrivée depuis sa dernière exécution réussie, ou si elle ne s\'est jamais exécutée. Après un échec, elle attend que la tentative suivante soit due. Sans planification, elle ne s\'exécute pas au démarrage.',
+  'edit.atStartPhone': 'Le téléphone rattrape tout seul les tâches dues chaque fois qu\'il se réveille, il n\'a donc pas besoin de réglage pour le démarrage du programme.',
   'edit.emptyDirsHint': 'Un dossier contenant des fichiers voyage de toute façon. Un dossier vide n\'a rien qui l\'implique, il lui faut donc son propre enregistrement. À désactiver pour un compartiment, qui n\'a pas de vrais dossiers.',
   'edit.metadataHint': 'Les droits, le propriétaire et les attributs étendus voyagent avec les données, partout où les deux côtés peuvent les stocker.',
   'edit.unnamed': 'sans nom',

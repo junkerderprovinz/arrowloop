@@ -594,6 +594,7 @@ const vi: Translations = {
   'atStart.alwaysHint': 'Công việc chạy một lần mỗi khi chương trình khởi động.',
   'atStart.due': 'Khi đến hạn',
   'atStart.dueHint': 'Công việc chỉ chạy nếu đã đến giờ theo lịch kể từ lần chạy thành công gần nhất, hoặc nếu chưa từng chạy. Sau khi thất bại, nó chờ đến lúc lần thử tiếp theo đến hạn. Không có lịch thì nó không chạy khi khởi động.',
+  'edit.atStartPhone': 'Điện thoại tự chạy bù các công việc đến hạn mỗi khi thức dậy, nên không cần cài đặt cho lúc chương trình khởi động.',
   'edit.emptyDirsHint': 'Thư mục có tệp bên trong thì dù sao cũng đi theo. Thư mục rỗng không có gì gợi ra nó nên cần ghi nhận riêng. Hãy tắt với một bucket, vốn không có thư mục thật.',
   'edit.metadataHint': 'Quyền, chủ sở hữu và các thuộc tính mở rộng đi cùng dữ liệu ở mọi nơi mà cả hai bên đều lưu được.',
   'edit.unnamed': 'chưa đặt tên',

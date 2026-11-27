@@ -594,6 +594,7 @@ const sl: Translations = {
   'atStart.alwaysHint': 'Opravilo se izvede enkrat ob vsakem zagonu programa.',
   'atStart.due': 'Ko je na vrsti',
   'atStart.dueHint': 'Opravilo se izvede le, če je od zadnje uspešne izvedbe prišel čas po urniku ali če se še nikoli ni izvedlo. Po napaki počaka, da pride na vrsto naslednji poskus. Brez urnika se ob zagonu ne izvede.',
+  'edit.atStartPhone': 'Telefon sam nadoknadi opravila, ki so na vrsti, vsakič ko se zbudi, zato ne potrebuje nastavitve za zagon programa.',
   'edit.emptyDirsHint': 'Mapa z datotekami potuje tako ali tako. Prazna nima ničesar, kar bi jo nakazovalo, zato potrebuje svoj zapis. Izklopljeno za shrambno vedro, ki pravih map nima.',
   'edit.metadataHint': 'Pravice, lastnik in razširjeni atributi potujejo s podatki povsod, kjer ju obe strani zmoreta shraniti.',
   'edit.unnamed': 'brez imena',

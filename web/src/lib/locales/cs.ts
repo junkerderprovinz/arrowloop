@@ -594,6 +594,7 @@ const cs: Translations = {
   'atStart.alwaysHint': 'Úloha se spustí jednou při každém spuštění programu.',
   'atStart.due': 'Když je na řadě',
   'atStart.dueHint': 'Úloha se spustí, jen pokud od posledního úspěšného běhu nastal čas podle plánu, nebo pokud ještě nikdy neběžela. Po chybě počká, až bude na řadě další pokus. Bez plánu se při spuštění nespustí.',
+  'edit.atStartPhone': 'Telefon dožene úlohy, které jsou na řadě, sám pokaždé, když se probudí, takže nastavení pro spuštění programu nepotřebuje.',
   'edit.emptyDirsHint': 'Složka se soubory putuje tak jako tak. Prázdná nemá nic, co by ji naznačovalo, a potřebuje proto vlastní záznam. Vypnuto pro úložný koš, který skutečné složky nemá.',
   'edit.metadataHint': 'Práva, vlastník a rozšířené atributy putují s daty všude tam, kde je obě strany dokážou uložit.',
   'edit.unnamed': 'bez názvu',

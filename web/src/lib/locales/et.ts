@@ -594,6 +594,7 @@ const et: Translations = {
   'atStart.alwaysHint': 'Töö käivitub igal programmi käivitumisel üks kord.',
   'atStart.due': 'Kui on aeg',
   'atStart.dueHint': 'Töö käivitub ainult siis, kui ajakava järgi on aeg tulnud pärast viimast õnnestunud käivitust või kui see pole kunagi käivitunud. Pärast tõrget ootab see, kuni on järgmise katse aeg. Ajakavata ei käivitu see programmi käivitumisel.',
+  'edit.atStartPhone': 'Telefon teeb tähtaja saanud tööd ise järele iga kord, kui see ärkab, nii et programmi käivitumise seadet pole vaja.',
   'edit.emptyDirsHint': 'Failidega kaust liigub niikuinii kaasa. Tühjal pole midagi, mis sellele viitaks, seega vajab ta oma kirjet. Väljas salvestusämbri puhul, millel päris kaustu ei ole.',
   'edit.metadataHint': 'Õigused, omanik ja laiendatud atribuudid liiguvad koos andmetega kõikjal, kus mõlemad pooled neid hoida suudavad.',
   'edit.unnamed': 'nimeta',

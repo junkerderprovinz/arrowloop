@@ -594,6 +594,7 @@ const ro: Translations = {
   'atStart.alwaysHint': 'Sarcina rulează o dată la fiecare pornire a programului.',
   'atStart.due': 'Când e scadentă',
   'atStart.dueHint': 'Sarcina rulează doar dacă a venit ora din programare de la ultima rulare reușită sau dacă nu a rulat niciodată. După un eșec, așteaptă până vine ora următoarei încercări. Fără programare nu rulează la pornire.',
+  'edit.atStartPhone': 'Telefonul recuperează singur sarcinile scadente de fiecare dată când se trezește, așa că nu are nevoie de o setare pentru pornirea programului.',
   'edit.emptyDirsHint': 'Un dosar cu fișiere în el călătorește oricum. Unul gol nu are nimic care să îl implice, deci are nevoie de propria însemnare. Dezactivat pentru un depozit de tip găleată, care nu are dosare adevărate.',
   'edit.metadataHint': 'Drepturile, proprietarul și atributele extinse călătoresc împreună cu datele oriunde ambele părți le pot păstra.',
   'edit.unnamed': 'fără nume',

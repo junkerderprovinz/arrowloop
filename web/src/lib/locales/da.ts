@@ -594,6 +594,7 @@ const da: Translations = {
   'atStart.alwaysHint': 'Jobbet kører én gang, hver gang programmet starter.',
   'atStart.due': 'Når det er tid',
   'atStart.dueHint': 'Jobbet kører kun, hvis tidsplanen er nået siden sidste vellykkede kørsel, eller hvis det aldrig har kørt. Efter en fejl venter det, til næste forsøg er tid. Uden tidsplan kører det ikke ved start.',
+  'edit.atStartPhone': 'Telefonen indhenter selv de job, der er tid til, hver gang den vågner, så den behøver ingen indstilling for programstart.',
   'edit.emptyDirsHint': 'En mappe med filer i følger med alligevel. En tom har intet, der antyder den, og har derfor brug for sin egen note. Slået fra for en bucket, som ikke har rigtige mapper.',
   'edit.metadataHint': 'Rettigheder, ejer og udvidede attributter følger med dataene alle de steder, hvor begge sider kan gemme dem.',
   'edit.unnamed': 'uden navn',

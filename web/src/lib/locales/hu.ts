@@ -594,6 +594,7 @@ const hu: Translations = {
   'atStart.alwaysHint': 'A feladat a program minden indulásakor egyszer lefut.',
   'atStart.due': 'Ha esedékes',
   'atStart.dueHint': 'A feladat csak akkor fut le, ha az utolsó sikeres futása óta eljött az ütemezett ideje, vagy ha még sosem futott. Hiba után megvárja, amíg esedékes a következő próbálkozás. Ütemezés nélkül induláskor nem fut le.',
+  'edit.atStartPhone': 'A telefon minden ébredéskor magától bepótolja az esedékes feladatokat, ezért nincs szüksége beállításra a program indulásához.',
   'edit.emptyDirsHint': 'A fájlokat tartalmazó mappa amúgy is átkerül. Az üresre semmi nem utal, ezért saját bejegyzésre van szüksége. Kikapcsolva egy tárolóvödörnél, amelynek nincsenek valódi mappái.',
   'edit.metadataHint': 'A jogosultságok, a tulajdonos és a kiterjesztett attribútumok az adatokkal együtt utaznak mindenütt, ahol mindkét oldal el tudja tárolni őket.',
   'edit.unnamed': 'névtelen',

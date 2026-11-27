@@ -594,6 +594,7 @@ const nl: Translations = {
   'atStart.alwaysHint': 'De taak draait één keer telkens als het programma start.',
   'atStart.due': 'Als het tijd is',
   'atStart.dueHint': 'De taak draait alleen als zijn planning sinds de laatste geslaagde run aan de beurt was, of als hij nog nooit gedraaid heeft. Na een fout wacht hij tot de volgende poging aan de beurt is. Zonder planning draait hij niet bij het starten.',
+  'edit.atStartPhone': 'De telefoon haalt taken die aan de beurt zijn zelf in telkens als hij wakker wordt, dus hij heeft geen instelling voor het starten van het programma nodig.',
   'edit.emptyDirsHint': 'Een map met bestanden erin reist sowieso mee. Een lege map heeft niets wat hem impliceert en heeft dus een eigen vermelding nodig. Uit voor een bucket, die geen echte mappen kent.',
   'edit.metadataHint': 'Rechten, eigenaar en uitgebreide kenmerken reizen mee met de gegevens, overal waar beide kanten ze kunnen bewaren.',
   'edit.unnamed': 'zonder naam',
