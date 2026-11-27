@@ -14,27 +14,35 @@ Two sets of files, read by two generators.
 
 ## Sources and licences
 
-**Font Awesome Free 6.7.2**, from <https://fontawesome.com>, for every button
-mark but Unraid's. Windows, Apple, Linux, Docker, Android and Google Play come
+**Font Awesome Free 6.7.2**, from <https://fontawesome.com>, for eight of the
+button marks. Windows, Apple, Linux, Docker, Android and Google Play come
 from the `brands` set. `zip.txt` is `file-zipper` and `book.txt` is `book`, both
 from the `solid` set and nobody's mark. Font Awesome splits its licence by asset
 type, and only the icons are used here: they are **CC BY 4.0**, which asks for
 attribution and nothing else. The fonts (SIL OFL 1.1) and the code (MIT) are not
 used. Copyright 2024 Fonticons, Inc.
 
-Simple Icons does not carry Windows any more, so the platform marks all come from
-Font Awesome, drawn to one convention and at one weight.
+Simple Icons does not carry Windows any more, so the desktop and phone marks all
+come from Font Awesome, drawn to one convention and at one weight.
 
 **Simple Icons**, for `flatpak.txt`: Flatpak's mark, which Flatpak publishes
 under CC BY 3.0 at <https://flatpak.org/press>; the path is Simple Icons' (the
 collection itself is CC0 1.0).
 
-**Simple Icons** (<https://simpleicons.org>), for `truenas.txt`: TrueNAS's
-mark, its `truenas.svg`. **CC0 1.0** for the path data.
+**Simple Icons** (<https://simpleicons.org>), for `proxmox.txt`,
+`synology.txt`, `qnap.txt` and `truenas.txt`: the marks of Proxmox, Synology,
+QNAP and TrueNAS, its `proxmox.svg`, `synology.svg`, `qnap.svg` and
+`truenas.svg`. **CC0 1.0** for the path data.
 
-The shared set these files are copied from also has F-Droid's mark (CC0 1.0) and
-Vivaldi's, both from Simple Icons. ArrowLoop has no button for either, so they
-are not here.
+**F-Droid's 2015 logo** from its artwork repository
+(<https://gitlab.com/fdroid/artwork>), for `f-droid.txt`, in one ink with the
+eyes, ring and F cut out. **CC BY-SA 3.0** or **GPL-3.0-or-later**.
+
+`mos.txt` is MOS's mark, the `mos.svg` in mos-nas/mos-releases, and
+`zimaos.txt` ZimaOS's, the `zimaos-logo.svg` of its web interface.
+
+The shared set these files are copied from also has Vivaldi's mark, from Simple
+Icons. ArrowLoop has no button for it, so it is not here.
 
 **Each brand's own material**, collected by hand - everything else here. These
 are the real drawings rather than a one-colour silhouette of one, and several of
@@ -50,8 +58,9 @@ computed from the first.
 **Dashboard Icons** (`homarr-labs/dashboard-icons`, <https://dashboardicons.com>)
 - `microsoft-onedrive.svg`, `oracle-cloud.svg` and `premiumize.svg`, the three nobody has supplied,
 `kdrive.svg`, its `infomaniak-kdrive.svg` with the wordmark left out, since the mark stands beside its name,
-and the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
-out, since the button draws it in one ink.
+the Unraid button's `unraid.txt`, its `unraid.svg` with the gradient left
+out, since the button draws it in one ink, and the Umbrel and UGREEN buttons'
+`umbrel.txt` and `ugreen.txt`.
 **Apache-2.0**, whose licence text is beside this file as
 `LICENSE-dashboard-icons.txt`. Copyright the Homarr Labs team and contributors.
 Unlike CC0 this one asks for attribution, which is why it is named here, in the
@@ -117,7 +126,9 @@ trademark may be used without permission, which is to refer to the thing it
 names: a platform mark sits on a download button **for that platform**, a
 provider mark sits on the row that connects to **that provider**, each is
 reproduced unmodified, and nothing here claims endorsement by or affiliation
-with any of them.
+with any of their owners. The button marks belong to Microsoft, Apple, Linus
+Torvalds, Google, F-Droid, Docker, Lime Technology, MOS, IceWhale, Umbrel,
+Proxmox, Synology, QNAP, UGREEN, iXsystems and the Flatpak project.
 
 Four provider marks are a judgement call, recorded because the next person
 should not have to guess.
