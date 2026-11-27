@@ -100,7 +100,7 @@ require (
 	github.com/dropbox/dropbox-sdk-go-unofficial/v6 v6.6.2 // indirect
 	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/ebitengine/purego v0.11.1 // indirect
-	github.com/eclipse/paho.golang v0.23.0 // indirect
+	github.com/eclipse/paho.golang v0.24.0 // indirect
 	github.com/emersion/go-message v0.18.2 // indirect
 	github.com/emersion/go-vcard v0.0.0-20260618161152-d854b7e0e2d3 // indirect
 	github.com/felixge/httpsnoop v1.1.0 // indirect
@@ -170,7 +170,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/ncruces/go-strftime v1.1.0 // indirect
 	github.com/ncw/swift/v2 v2.0.5 // indirect
-	github.com/nicholas-fedor/shoutrrr v0.25.0 // indirect
+	github.com/nicholas-fedor/shoutrrr v0.25.1 // indirect
 	github.com/oklog/ulid/v2 v2.1.2 // indirect
 	github.com/oracle/oci-go-sdk/v65 v65.127.0 // indirect
 	github.com/panjf2000/ants/v2 v2.12.1 // indirect
@@ -181,7 +181,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.28 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pkg/sftp v1.13.12 // indirect
+	github.com/pkg/sftp v1.13.13 // indirect
 	github.com/pkg/xattr v0.4.12 // indirect
 	github.com/power-devops/perfstat v0.0.0-20260805114148-88456608a4f6 // indirect
 	github.com/pquerna/otp v1.5.0 // indirect
@@ -238,7 +238,7 @@ require (
 	golang.org/x/term v0.48.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
 	golang.org/x/time v0.16.0 // indirect
-	golang.org/x/tools v0.52.0 // indirect
+	golang.org/x/tools v0.53.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20261024220952-b3bc704ef0ee // indirect
 	google.golang.org/api v0.304.0 // indirect
@@ -254,7 +254,7 @@ require (
 	mellium.im/sasl v0.3.2 // indirect
 	mellium.im/xmlstream v0.15.4 // indirect
 	mellium.im/xmpp v0.23.0 // indirect
-	modernc.org/libc v1.82.12 // indirect
+	modernc.org/libc v1.82.14 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.13.0 // indirect
 	modernc.org/sqlite v1.63.0 // indirect

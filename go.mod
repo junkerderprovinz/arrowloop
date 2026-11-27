@@ -17,8 +17,8 @@ require (
 	github.com/godbus/dbus/v5 v5.2.4
 	github.com/gofrs/flock v0.13.2
 	github.com/junkerderprovinz/parleyport v1.3.8
-	github.com/nicholas-fedor/shoutrrr v0.25.0
-	github.com/pkg/sftp v1.13.12
+	github.com/nicholas-fedor/shoutrrr v0.25.1
+	github.com/pkg/sftp v1.13.13
 	github.com/rclone/gofakes3 v0.0.12
 	github.com/rclone/rclone v1.76.0
 	github.com/robfig/cron/v3 v3.0.1
@@ -29,7 +29,7 @@ require (
 	golang.org/x/text v0.44.0
 	golang.zx2c4.com/wireguard v0.0.0-20261024220952-b3bc704ef0ee
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c
-	modernc.org/libc v1.82.12
+	modernc.org/libc v1.82.14
 	modernc.org/sqlite v1.63.0
 )
 
@@ -107,7 +107,7 @@ require (
 	github.com/dropbox/dropbox-sdk-go-unofficial/v6 v6.6.2 // indirect
 	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/ebitengine/purego v0.11.1 // indirect
-	github.com/eclipse/paho.golang v0.23.0 // indirect
+	github.com/eclipse/paho.golang v0.24.0 // indirect
 	github.com/emersion/go-message v0.18.2 // indirect
 	github.com/emersion/go-vcard v0.0.0-20260618161152-d854b7e0e2d3 // indirect
 	github.com/felixge/httpsnoop v1.1.0 // indirect
@@ -244,7 +244,7 @@ require (
 	golang.org/x/oauth2 v0.38.0 // indirect
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/time v0.16.0 // indirect
-	golang.org/x/tools v0.52.0 // indirect
+	golang.org/x/tools v0.53.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	google.golang.org/api v0.304.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261005182115-fad411399dd8 // indirect

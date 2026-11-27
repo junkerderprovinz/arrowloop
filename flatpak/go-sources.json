@@ -995,17 +995,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/eclipse/paho.golang/@v/v0.23.0.mod",
-        "sha256": "5abbf5cab397267a6bd9a8d855429cd820d55464840439355530023f65257f13",
+        "url": "https://proxy.golang.org/github.com/eclipse/paho.golang/@v/v0.24.0.mod",
+        "sha256": "646c9b4d2c2b0188c95899003d9a7538854a8ad4eded3158586efce6a4f516c8",
         "dest": "gomod/github.com/eclipse/paho.golang/@v",
-        "dest-filename": "v0.23.0.mod"
+        "dest-filename": "v0.24.0.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/eclipse/paho.golang/@v/v0.23.0.zip",
-        "sha256": "08552356cf11dc13ee98a73825a3c3b66c92e1a4a15c24d5dce9c12dea4e7d28",
+        "url": "https://proxy.golang.org/github.com/eclipse/paho.golang/@v/v0.24.0.zip",
+        "sha256": "ffa35a1b667c5bdb2205ccf7f405c68939a469fbb1aa9d7aed3056873c86833a",
         "dest": "gomod/github.com/eclipse/paho.golang/@v",
-        "dest-filename": "v0.23.0.zip"
+        "dest-filename": "v0.24.0.zip"
     },
     {
         "type": "file",
@@ -1933,17 +1933,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.0.mod",
-        "sha256": "25eb087bf1f6c94d4d1a9012108571e786690d99d20f997af340c36b3e6929d1",
+        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.1.mod",
+        "sha256": "f24bf3defccca2c80e99d30c0c566ae8ae7b53aac6c40cefb44b08f2d8023d8c",
         "dest": "gomod/github.com/nicholas-fedor/shoutrrr/@v",
-        "dest-filename": "v0.25.0.mod"
+        "dest-filename": "v0.25.1.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.0.zip",
-        "sha256": "18737eb4847c88509efefac9fe15015fdb01d8d0c9fe8ea304c9c62d0ea6bd4f",
+        "url": "https://proxy.golang.org/github.com/nicholas-fedor/shoutrrr/@v/v0.25.1.zip",
+        "sha256": "f22304e959787920ba18b7f95ee3c4a5a0b9232935f1519a0cce14653ab47f8b",
         "dest": "gomod/github.com/nicholas-fedor/shoutrrr/@v",
-        "dest-filename": "v0.25.0.zip"
+        "dest-filename": "v0.25.1.zip"
     },
     {
         "type": "file",
@@ -2087,17 +2087,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/pkg/sftp/@v/v1.13.12.mod",
+        "url": "https://proxy.golang.org/github.com/pkg/sftp/@v/v1.13.13.mod",
         "sha256": "638fc2abaa296b06fe82bf11f9d71db7969b649dc9803fe8306790248e7c3b72",
         "dest": "gomod/github.com/pkg/sftp/@v",
-        "dest-filename": "v1.13.12.mod"
+        "dest-filename": "v1.13.13.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/github.com/pkg/sftp/@v/v1.13.12.zip",
-        "sha256": "ff44bd0b698800c685fa062a8f9b02e5a74051e1cb88b1a0b12c4f0e4d0ab98a",
+        "url": "https://proxy.golang.org/github.com/pkg/sftp/@v/v1.13.13.zip",
+        "sha256": "83005cc2156ae435f0ba5b8a4125868467f6f0eab78c53e15b3ab5ee084c7fe5",
         "dest": "gomod/github.com/pkg/sftp/@v",
-        "dest-filename": "v1.13.12.zip"
+        "dest-filename": "v1.13.13.zip"
     },
     {
         "type": "file",
@@ -3074,17 +3074,17 @@
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.12.mod",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.14.mod",
         "sha256": "c53d2eba645ae371b539dbce6d046cec637f3f933800e535579a8fb1c653d13b",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.12.mod"
+        "dest-filename": "v1.82.14.mod"
     },
     {
         "type": "file",
-        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.12.zip",
-        "sha256": "b446cf34bc6d6b07635473d132d81fd4f37d339dd251a870c45cecd47b7dc137",
+        "url": "https://proxy.golang.org/modernc.org/libc/@v/v1.82.14.zip",
+        "sha256": "f064daf88be76fc40506d720bc3265daea311f29e007e7e72f4ed482595c6788",
         "dest": "gomod/modernc.org/libc/@v",
-        "dest-filename": "v1.82.12.zip"
+        "dest-filename": "v1.82.14.zip"
     },
     {
         "type": "file",
