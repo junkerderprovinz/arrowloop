@@ -2163,6 +2163,7 @@ const bg: Translations = {
   'job.usual': 'Обичайно изпълнение',
   'job.checkCard': 'Проверка',
   'job.dupesCard': 'Дубликати',
+  'job.saveFirst': 'Достъпно, след като задачата бъде запазена.',
   'job.heldCard': 'Спряно изпълнение',
   'job.runCard': 'Изпълнение',
   'job.usual.deleted': 'Изтрити файлове при изпълнение: {low} до {high}',

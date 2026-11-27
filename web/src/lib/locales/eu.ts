@@ -2163,6 +2163,7 @@ const eu: Translations = {
   'job.usual': 'Ohiko exekuzioa',
   'job.checkCard': 'Egiaztapena',
   'job.dupesCard': 'Bikoiztuak',
+  'job.saveFirst': 'Erabilgarri lana gorde ondoren.',
   'job.heldCard': 'Gelditutako exekuzioa',
   'job.runCard': 'Exekuzioa',
   'job.usual.deleted': 'Exekuzio bakoitzean ezabatutako fitxategiak: {low} eta {high} artean',

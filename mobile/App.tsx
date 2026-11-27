@@ -47,6 +47,7 @@ import { FrameProvider } from "./src/frame";
 import { GUTTER, railWidth, sceneBox, sceneWidth, sideBarShown, titleRow } from "./src/layout";
 import { History } from "./src/screens/History";
 import { Instances } from "./src/screens/Instances";
+import { Dupes } from "./src/screens/Dupes";
 import { JobEdit } from "./src/screens/JobEdit";
 import { Jobs } from "./src/screens/Jobs";
 import { Language } from "./src/screens/Language";
@@ -286,6 +287,7 @@ function Shell() {
                   <JobsNav.Screen name="Plan" component={Plan} options={{ title: t("preview.title") }} />
                   <JobsNav.Screen name="Anomalies" component={Anomalies} options={{ title: t("nav.anomalies") }} />
                   <JobsNav.Screen name="Trash" component={Trash} options={{ title: t("nav.trash") }} />
+                  <JobsNav.Screen name="Dupes" component={Dupes} options={{ title: t("jobs.dupes") }} />
                 </JobsNav.Navigator>
               )}
             </Tabs.Screen>

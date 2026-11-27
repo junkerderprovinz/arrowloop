@@ -2163,6 +2163,7 @@ const sv: Translations = {
   'job.usual': 'Vanlig körning',
   'job.checkCard': 'Kontroll',
   'job.dupesCard': 'Dubbletter',
+  'job.saveFirst': 'Tillgängligt när jobbet har sparats.',
   'job.heldCard': 'Stoppad körning',
   'job.runCard': 'Körning',
   'job.usual.deleted': 'Raderade filer per körning: {low} till {high}',

@@ -12,7 +12,8 @@ import {
   type GestureResponderEvent,
 } from "react-native";
 import { api, type Job, type Remote, type Run } from "../api";
-import { CardMenu, type CardAction } from "../CardMenu";
+import { CardMenu, type CardEntry } from "../CardMenu";
+import { jobMenu } from "../jobMenu";
 import { clock } from "../clock";
 import { GLYPH, Glyph } from "../glyphs";
 import { markForSide } from "../jobMark";
@@ -23,7 +24,7 @@ import { jobStatus } from "../../../web/src/lib/jobList";
 import { byJobOrder, stepJob } from "../../../web/src/lib/jobOrder";
 import { mayRun, mayRunAll } from "../fileAccess";
 import { barFit, jobsBar, type BarButton } from "../jobsBar";
-import { useT } from "../i18n";
+import { useT, type T } from "../i18n";
 import { animateNext, useMotion } from "../motion";
 import type { Nav, JobsStack } from "../nav";
 import { RunProgress, useRunProgress, type Progress } from "../progress";
@@ -53,6 +54,19 @@ import {
   useSideRoom,
   useTheme,
 } from "../ui";
+
+/**
+ * Adds a copy of a job without asking, since deleting the copy undoes it, and
+ * returns the copy's name. The copy starts held; see jobCopy.data.ts.
+ */
+export async function duplicateJob(name: string, t: T): Promise<string | undefined> {
+  const config = await api.config();
+  const source = config.jobs.find((j) => j.name === name);
+  if (!source) return undefined;
+  const copy = jobCopy(source, config.jobs.map((j) => j.name), t("edit.copySuffix"), t("edit.newJob"));
+  await api.writeConfig({ ...config, jobs: [...config.jobs, copy] });
+  return copy.name;
+}
 
 /**
  * The job list: one card per job with its sides, its one status and the two
@@ -147,14 +161,9 @@ export function Jobs() {
     }
   };
 
-  /** Adds a copy of a job without asking, since deleting the copy undoes it. */
   const duplicate = async (job: Job) => {
     try {
-      const config = await api.config();
-      const source = config.jobs.find((j) => j.name === job.name);
-      if (!source) return;
-      const copy = jobCopy(source, config.jobs.map((j) => j.name), t("edit.copySuffix"), t("edit.newJob"));
-      await api.writeConfig({ ...config, jobs: [...config.jobs, copy] });
+      await duplicateJob(job.name, t);
       await load();
     } catch (e) {
       setError((e as Error).message);
@@ -223,24 +232,24 @@ export function Jobs() {
   if (jobs === null) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
   /** Everything the job screen offers besides Run now and the hold, so nothing needs the job opened first. */
-  const menuFor = (job: Job): CardAction[] => {
-    const [upper, lower] = sidePair(job.left, job.right, t);
-    const trash = (side: "left" | "right", place: string) => nav.navigate("Trash", { name: job.name, side, place });
-    return [
-      // Open is listed although tapping the card does the same, so it can be found.
-      { label: t("action.open"), glyph: "IconSync", onPress: () => nav.navigate("JobDetail", { name: job.name }) },
-      // Opening and editing reach the same screen but stay two rows, so
-      // somebody looking for "edit" finds it.
-      { label: t("action.edit"), glyph: "IconPencil", onPress: () => nav.navigate("JobEdit", { name: job.name }) },
-      // The copy starts held; see jobCopy.data.ts.
-      { label: t("edit.duplicate"), glyph: "IconCopy", onPress: () => void duplicate(job) },
-      { label: t("jobs.preview"), glyph: "IconPreview", onPress: () => nav.navigate("Plan", { name: job.name }) },
-      // The findings need room, which the job's own screen has.
-      { label: t("jobs.check"), glyph: "IconCheck", onPress: () => nav.navigate("JobDetail", { name: job.name, check: true }) },
-      { label: `${t("nav.trash")} · ${upper}`, glyph: "IconTrash", onPress: () => trash("left", upper) },
-      { label: `${t("nav.trash")} · ${lower}`, glyph: "IconTrash", onPress: () => trash("right", lower) },
-      { label: t("action.delete"), glyph: "IconTrash", onPress: () => remove(job) },
-    ];
+  const menuFor = (job: Job): CardEntry[] => {
+    const places = sidePair(job.left, job.right, t);
+    return jobMenu(
+      t,
+      places,
+      {
+        open: () => nav.navigate("JobDetail", { name: job.name }),
+        edit: () => nav.navigate("JobEdit", { name: job.name }),
+        duplicate: () => void duplicate(job),
+        preview: () => nav.navigate("Plan", { name: job.name }),
+        // The findings need room, which the job's own screen has.
+        check: () => nav.navigate("JobDetail", { name: job.name, check: true }),
+        dupes: () => nav.navigate("Dupes", { name: job.name, places }),
+        trash: (side, place) => nav.navigate("Trash", { name: job.name, side, place }),
+        remove: () => remove(job),
+      },
+      "card",
+    );
   };
 
   const findings = waiting.findings ?? [];
@@ -463,7 +472,7 @@ function JobCard({
   /** Whether the hold is being written right now. */
   holding: boolean;
   onHold: () => void;
-  menu: CardAction[];
+  menu: CardEntry[];
   /** The target's logo, if the engine could name its product. */
   mark?: string;
   /** The mark in front of each side; see sideMark. */
@@ -610,7 +619,7 @@ function JobRow({
   busy: boolean;
   onOpen: () => void;
   onAct: () => void;
-  menu: CardAction[];
+  menu: CardEntry[];
   moving: Moving;
 }) {
   const { t, lang } = useT();

@@ -2163,6 +2163,7 @@ const pl: Translations = {
   'job.usual': 'Zwykły przebieg',
   'job.checkCard': 'Sprawdzenie',
   'job.dupesCard': 'Duplikaty',
+  'job.saveFirst': 'Dostępne po zapisaniu zadania.',
   'job.heldCard': 'Wstrzymany przebieg',
   'job.runCard': 'Przebieg',
   'job.usual.deleted': 'Usunięte pliki na uruchomienie: od {low} do {high}',

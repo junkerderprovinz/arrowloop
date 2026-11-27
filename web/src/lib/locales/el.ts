@@ -2163,6 +2163,7 @@ const el: Translations = {
   'job.usual': 'Συνήθης εκτέλεση',
   'job.checkCard': 'Έλεγχος',
   'job.dupesCard': 'Διπλότυπα',
+  'job.saveFirst': 'Διαθέσιμο μόλις αποθηκευτεί η εργασία.',
   'job.heldCard': 'Σταματημένη εκτέλεση',
   'job.runCard': 'Εκτέλεση',
   'job.usual.deleted': 'Διαγραμμένα αρχεία ανά εκτέλεση: {low} έως {high}',

@@ -2163,6 +2163,7 @@ const sl: Translations = {
   'job.usual': 'Običajni zagon',
   'job.checkCard': 'Preverjanje',
   'job.dupesCard': 'Dvojniki',
+  'job.saveFirst': 'Na voljo, ko je opravilo shranjeno.',
   'job.heldCard': 'Zadržan zagon',
   'job.runCard': 'Zagon',
   'job.usual.deleted': 'Izbrisane datoteke na zagon: od {low} do {high}',

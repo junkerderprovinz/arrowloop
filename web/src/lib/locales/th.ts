@@ -2163,6 +2163,7 @@ const th: Translations = {
   'job.usual': 'การรันตามปกติ',
   'job.checkCard': 'การตรวจสอบ',
   'job.dupesCard': 'ไฟล์ซ้ำ',
+  'job.saveFirst': 'ใช้ได้เมื่อบันทึกงานแล้ว',
   'job.heldCard': 'การรันที่ถูกพักไว้',
   'job.runCard': 'การรัน',
   'job.usual.deleted': 'ไฟล์ที่ลบต่อการรัน: {low} ถึง {high}',

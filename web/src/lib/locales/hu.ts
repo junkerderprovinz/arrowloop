@@ -2163,6 +2163,7 @@ const hu: Translations = {
   'job.usual': 'Szokásos futás',
   'job.checkCard': 'Ellenőrzés',
   'job.dupesCard': 'Duplikátumok',
+  'job.saveFirst': 'A feladat mentése után érhető el.',
   'job.heldCard': 'Felfüggesztett futás',
   'job.runCard': 'Futás',
   'job.usual.deleted': 'Törölt fájlok futásonként: {low} és {high} között',

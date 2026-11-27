@@ -2163,6 +2163,7 @@ const ca: Translations = {
   'job.usual': 'Execució habitual',
   'job.checkCard': 'Comprovació',
   'job.dupesCard': 'Duplicats',
+  'job.saveFirst': 'Disponible quan la tasca estigui desada.',
   'job.heldCard': 'Execució aturada',
   'job.runCard': 'Execució',
   'job.usual.deleted': 'Fitxers esborrats per execució: de {low} a {high}',

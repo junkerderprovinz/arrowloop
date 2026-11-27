@@ -2163,6 +2163,7 @@ const hi: Translations = {
   'job.usual': 'सामान्य रन',
   'job.checkCard': 'जाँच',
   'job.dupesCard': 'दोहरी फ़ाइलें',
+  'job.saveFirst': 'काम सहेजने के बाद उपलब्ध।',
   'job.heldCard': 'रोका गया रन',
   'job.runCard': 'रन',
   'job.usual.deleted': 'प्रति रन हटाई गई फ़ाइलें: {low} से {high}',

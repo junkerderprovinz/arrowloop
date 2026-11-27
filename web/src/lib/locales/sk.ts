@@ -2163,6 +2163,7 @@ const sk: Translations = {
   'job.usual': 'Obvyklý beh',
   'job.checkCard': 'Kontrola',
   'job.dupesCard': 'Duplicity',
+  'job.saveFirst': 'K dispozícii, keď sa úloha uloží.',
   'job.heldCard': 'Pozastavený beh',
   'job.runCard': 'Beh',
   'job.usual.deleted': 'Zmazané súbory na beh: {low} až {high}',

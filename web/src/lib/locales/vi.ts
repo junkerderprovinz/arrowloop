@@ -2163,6 +2163,7 @@ const vi: Translations = {
   'job.usual': 'Lần chạy thông thường',
   'job.checkCard': 'Kiểm tra',
   'job.dupesCard': 'Bản trùng',
+  'job.saveFirst': 'Dùng được sau khi lưu công việc.',
   'job.heldCard': 'Lần chạy bị giữ',
   'job.runCard': 'Lần chạy',
   'job.usual.deleted': 'Tệp bị xóa mỗi lần chạy: {low} đến {high}',

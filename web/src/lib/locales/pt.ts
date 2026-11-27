@@ -2163,6 +2163,7 @@ const pt: Translations = {
   'job.usual': 'Execução habitual',
   'job.checkCard': 'Verificação',
   'job.dupesCard': 'Duplicados',
+  'job.saveFirst': 'Disponível depois de guardar a tarefa.',
   'job.heldCard': 'Execução retida',
   'job.runCard': 'Execução',
   'job.usual.deleted': 'Ficheiros apagados por execução: de {low} a {high}',

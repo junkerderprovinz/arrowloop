@@ -2163,6 +2163,7 @@ const is: Translations = {
   'job.usual': 'Venjuleg keyrsla',
   'job.checkCard': 'Athugun',
   'job.dupesCard': 'Tvítekningar',
+  'job.saveFirst': 'Í boði þegar verkið hefur verið vistað.',
   'job.heldCard': 'Stöðvuð keyrsla',
   'job.runCard': 'Keyrsla',
   'job.usual.deleted': 'Eyddar skrár í keyrslu: {low} til {high}',

@@ -16,9 +16,10 @@ import { arrow } from "./Jobs";
 
 /**
  * The actions and recent runs of a saved job, shown above its fields in
- * JobEdit. A job still being typed has none of either.
+ * JobEdit. A job still being typed has none of either. Each time `checks`
+ * goes up the job is checked, as its Check button would.
  */
-export function JobLive({ name, check = false }: { name: string; check?: boolean }) {
+export function JobLive({ name, checks }: { name: string; checks: number }) {
   const nav = useNavigation<Nav<JobsStack>>();
   const { t, lang } = useT();
   const jobName = name;
@@ -87,9 +88,9 @@ export function JobLive({ name, check = false }: { name: string; check?: boolean
   };
 
   useEffect(() => {
-    if (check) void act("check", look);
+    if (checks > 0) void act("check", look);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [checks]);
 
   if (!job) return null;
   const last = job.recent[0];

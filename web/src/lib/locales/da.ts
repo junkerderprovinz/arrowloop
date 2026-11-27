@@ -2163,6 +2163,7 @@ const da: Translations = {
   'job.usual': 'Normal kørsel',
   'job.checkCard': 'Tjek',
   'job.dupesCard': 'Dubletter',
+  'job.saveFirst': 'Tilgængeligt, når jobbet er gemt.',
   'job.heldCard': 'Stoppet kørsel',
   'job.runCard': 'Kørsel',
   'job.usual.deleted': 'Slettede filer pr. kørsel: {low} til {high}',

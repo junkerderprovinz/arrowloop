@@ -2163,6 +2163,7 @@ const he: Translations = {
   'job.usual': 'הרצה רגילה',
   'job.checkCard': 'בדיקה',
   'job.dupesCard': 'כפולים',
+  'job.saveFirst': 'זמין לאחר שמירת המשימה.',
   'job.heldCard': 'הרצה מוחזקת',
   'job.runCard': 'הרצה',
   'job.usual.deleted': 'קבצים שנמחקים בכל הרצה: {low} עד {high}',

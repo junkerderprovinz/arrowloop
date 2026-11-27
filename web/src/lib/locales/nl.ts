@@ -2163,6 +2163,7 @@ const nl: Translations = {
   'job.usual': 'Gewone run',
   'job.checkCard': 'Controle',
   'job.dupesCard': 'Dubbele bestanden',
+  'job.saveFirst': 'Beschikbaar zodra de taak is opgeslagen.',
   'job.heldCard': 'Vastgehouden run',
   'job.runCard': 'Run',
   'job.usual.deleted': 'Verwijderde bestanden per run: {low} tot {high}',
