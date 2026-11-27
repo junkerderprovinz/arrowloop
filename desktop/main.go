@@ -193,6 +193,26 @@ func run() error {
 	}
 	defer tunnel.Close()
 	runner.SetVPN(tunnel)
+
+	// A newer release is downloaded in the background and starts next time;
+	// see updates.go. The installed copy leaves that to the installer's
+	// scheduled task and only passes on the news.
+	var up *updater
+	if installed {
+		up = newUpdater(window, log.Default(), sh.announce)
+		go up.follow(ctx)
+	} else {
+		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), sh.announce)
+		go up.run(ctx)
+	}
+	up.installed = installed
+	up.restart = sh.restart
+	// A Flatpak gets its new versions from the software centre.
+	var updates web.Updates
+	if flatpak.ID() == "" {
+		updates = up
+	}
+
 	server := &web.Server{
 		History: hist, Runner: runner, UI: ui,
 		Placeholder: webui.Placeholder,
@@ -208,6 +228,7 @@ func run() error {
 		VPN:          tunnel,
 		Deployment:   "desktop",
 		Installer:    pommelPorter,
+		Updates:      updates,
 	}
 	api = server.Handler()
 	server.StartPairing()
@@ -233,24 +254,6 @@ func run() error {
 	sh.live.Watch(ctx, runner)
 	tell.watch(ctx, runner, window, sh.showMain)
 	newBridge().run(ctx, runner, server, app)
-
-	// A newer release is downloaded in the background and starts next time;
-	// see updates.go. The installed copy leaves that to the installer's
-	// scheduled task and only passes on the news.
-	var up *updater
-	if installed {
-		up = newUpdater(window, log.Default(), sh.announce)
-		go up.follow(ctx)
-	} else {
-		up = newUpdater(window, openUpdateLog(filepath.Join(filepath.Dir(configPath), "update.log")), sh.announce)
-		go up.run(ctx)
-	}
-	up.installed = installed
-	up.restart = sh.restart
-	// A Flatpak gets its new versions from the software centre.
-	if flatpak.ID() == "" {
-		server.Updates = up
-	}
 
 	app.OnShutdown(func() {
 		stop()

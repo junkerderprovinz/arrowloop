@@ -2,7 +2,9 @@ package web_test
 
 import (
 	"net/http"
+	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"sync"
 	"testing"
@@ -323,6 +325,38 @@ func TestAContainerCannotUpdateItself(t *testing.T) {
 		resp, _ := doJSON(t, h.srv, http.MethodPost, path, "")
 		if resp.StatusCode < 400 {
 			t.Errorf("%s answered %s on a container", path, resp.Status)
+		}
+	}
+}
+
+// Every window call the page makes has a route on a desktop build.
+func TestADesktopAnswersEveryWindowCallThePageMakes(t *testing.T) {
+	src, err := os.ReadFile(filepath.Join("..", "..", "web", "src", "lib", "api.ts"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	calls := regexp.MustCompile(`request<[^(]*\('(/api/window[^']*)'(?:,\s*\{\s*method:\s*'([A-Z]+)')?`).FindAllStringSubmatch(string(src), -1)
+	if len(calls) == 0 {
+		t.Fatal("found no window calls in web/src/lib/api.ts")
+	}
+
+	h := newHarness(t)
+	srv := newServer(t, &web.Server{
+		History:      h.history,
+		Runner:       h.runner,
+		Window:       deskset.Open(filepath.Join(t.TempDir(), "arrowloop.json")),
+		OpenWindow:   func() {},
+		SystemAccent: func() string { return "" },
+		Updates:      &fakeUpdates{restarted: make(chan struct{})},
+	})
+	for _, call := range calls {
+		path, method := call[1], call[2]
+		if method == "" {
+			method = http.MethodGet
+		}
+		resp, said := doJSON(t, srv, method, path, "")
+		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusMethodNotAllowed {
+			t.Errorf("the page calls %s %s, which a desktop build answers with %s %s", method, path, resp.Status, said)
 		}
 	}
 }
