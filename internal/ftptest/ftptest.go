@@ -176,15 +176,19 @@ func (s *Server) serve(conn net.Conn) {
 			c.reply("221 bye")
 			return
 		case "FEAT":
-			c.reply("211-Features:\r\n MLST type*;size*;modify*;\r\n EPSV\r\n UTF8\r\n211 End")
+			c.reply("211-Features:\r\n MDTM\r\n MLST type*;size*;modify*;\r\n EPSV\r\n UTF8\r\n211 End")
 		case "TYPE", "OPTS", "NOOP":
 			c.reply("200 ok")
 		case "EPSV":
 			c.passive()
 		case "MLSD":
-			c.list(arg)
+			c.list(arg, mlsdLine)
+		case "LIST":
+			c.list(strings.TrimSpace(strings.TrimPrefix(arg, "-a")), lsLine)
 		case "MLST":
 			c.stat(arg)
+		case "MDTM":
+			c.modified(arg)
 		case "RETR":
 			c.retrieve(arg)
 		default:
@@ -223,6 +227,25 @@ func facts(info os.FileInfo) string {
 	return fmt.Sprintf("type=%s;size=%d;modify=%s;", kind, info.Size(), info.ModTime().UTC().Format("20060102150405"))
 }
 
+func mlsdLine(info os.FileInfo) string {
+	return facts(info) + " " + info.Name()
+}
+
+// lsLine is a line of LIST in the form of ls -l, which gives the time to the
+// minute for the last half year and to the day before that.
+func lsLine(info os.FileInfo) string {
+	mode := "-rw-r--r--"
+	if info.IsDir() {
+		mode = "drwxr-xr-x"
+	}
+	when := info.ModTime().UTC()
+	stamp := when.Format("Jan _2 15:04")
+	if time.Since(when) > 180*24*time.Hour {
+		stamp = when.Format("Jan _2  2006")
+	}
+	return fmt.Sprintf("%s 1 owner group %d %s %s", mode, info.Size(), stamp, info.Name())
+}
+
 // takeData hands over the connection a listing or a file goes over, which
 // serves one of them.
 func (c *session) takeData() (net.Listener, bool) {
@@ -235,7 +258,7 @@ func (c *session) takeData() (net.Listener, bool) {
 	return listener, true
 }
 
-func (c *session) list(dir string) {
+func (c *session) list(dir string, line func(os.FileInfo) string) {
 	listener, ok := c.takeData()
 	if !ok {
 		return
@@ -259,7 +282,7 @@ func (c *session) list(dir string) {
 		if err != nil {
 			continue
 		}
-		fmt.Fprintf(conn, "%s %s\r\n", facts(info), e.Name())
+		fmt.Fprintf(conn, "%s\r\n", line(info))
 	}
 	conn.Close()
 	c.reply("226 done")
@@ -300,4 +323,13 @@ func (c *session) stat(name string) {
 		return
 	}
 	c.reply(fmt.Sprintf("250-details\r\n %s %s\r\n250 End", facts(info), name))
+}
+
+func (c *session) modified(name string) {
+	info, err := os.Stat(c.local(name))
+	if err != nil {
+		c.reply("550 no such file")
+		return
+	}
+	c.reply("213 " + info.ModTime().UTC().Format("20060102150405"))
 }

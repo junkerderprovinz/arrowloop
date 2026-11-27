@@ -78,21 +78,34 @@ func smbConnections(p place) int {
 	return found.at[p.target+p.account]
 }
 
-// Narrow returns side set to open the connections its FTP server was found to
-// take, or side as it is where nothing was found or its target names its own
-// number.
+// Narrow returns side with the settings an FTP side is opened with: the
+// connections its server was found to take, unless its target names its own
+// number, and MLSD off for a target that lists hidden files.
 func Narrow(side string) string {
 	parsed, p, ok := ftpSide(side)
-	if !ok || p.ownConnections {
-		return side
-	}
-	found.Lock()
-	n, ok := found.at[p.target+p.account]
-	found.Unlock()
 	if !ok {
 		return side
 	}
-	return strings.TrimSuffix(parsed.ConfigString, ":") + ",concurrency=" + strconv.Itoa(n) + ":" + parsed.Path
+	var set []string
+	if !p.ownConnections {
+		found.Lock()
+		n, ok := found.at[p.target+p.account]
+		found.Unlock()
+		if ok {
+			set = append(set, "concurrency="+strconv.Itoa(n))
+		}
+	}
+	// LIST -a gives a time to the minute or the day, and rclone takes it as
+	// exact while it looks a single file up by MLST to the second, so every
+	// file would read as changed on the next run. Without MLSD both go
+	// through LIST and take the time from MDTM.
+	if p.listsHidden {
+		set = append(set, "disable_mlsd=true")
+	}
+	if len(set) == 0 {
+		return side
+	}
+	return strings.TrimSuffix(parsed.ConfigString, ":") + "," + strings.Join(set, ",") + ":" + parsed.Path
 }
 
 // StepDown halves the connections a side's server is opened with, after it
