@@ -68,6 +68,8 @@ import {
   type ScheduleState,
 } from "../../../web/src/lib/schedule.data";
 import { phoneFolder } from "../../../web/src/lib/side.data";
+import { atStartOf, runAtStartFor, type AtStartChoice } from "../../../web/src/lib/atStart";
+import { phoneAtStart } from "../atStart";
 import { overNetwork } from "../../../web/src/lib/localTarget";
 import { vpnChoiceNote, type VpnState } from "../../../web/src/lib/vpn";
 import { capitalized } from "../../../web/src/lib/capitalized";
@@ -457,9 +459,7 @@ export function JobEdit() {
       />
 
       {/* A watching job owns its schedule, so Live follows the global
-          settings with it. No "run at start" switch: the engine restarts with
-          the app and after every eviction, so it would run a job several
-          times a day. */}
+          settings with it. */}
       <Section title={t("edit.schedule")} hue={1}>
         <View ref={scheduleRef} collapsable={false} style={styles.stack}>
           <FromGlobal {...global("schedule")}>
@@ -486,6 +486,18 @@ export function JobEdit() {
             />
           </FromGlobal>
         </View>
+        <ChoiceRow<AtStartChoice>
+          label={t("edit.runAtStart")}
+          bar
+          hue={1}
+          value={atStartOf(job.runAtStart)}
+          onChange={(choice) => set({ runAtStart: runAtStartFor(choice) }, true)}
+          options={phoneAtStart(job.runAtStart).map((c) => ({
+            value: c,
+            label: t(`atStart.${c}`),
+            hint: t(`atStart.${c}Hint`),
+          }))}
+        />
       </Section>
 
       {/* How the two sides are brought together. A two-way job has only one

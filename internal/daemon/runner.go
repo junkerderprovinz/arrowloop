@@ -96,6 +96,11 @@ type Runner struct {
 
 	slots slots
 
+	// startReady and noStartRuns are set before Serve, by HoldStartRuns and
+	// SkipStartRuns.
+	startReady  <-chan struct{}
+	noStartRuns bool
+
 	backups backupState
 	pruning pruneState
 
@@ -991,23 +996,35 @@ func (r *Runner) runAndReport(ctx context.Context, key string) (history.Run, err
 	return rec, err
 }
 
-// runAtStart runs the jobs asking to go as soon as the program does, one at a
-// time in file order. It runs them in a goroutine so Serve can answer reloads
-// while the first sync takes minutes.
+// runAtStart runs the jobs set to run at every start, and those set to run
+// when due that are, one at a time in file order. It runs them in a goroutine
+// so Serve can answer reloads while the first sync takes minutes.
 func (r *Runner) runAtStart(ctx context.Context) {
-	cfg := r.config()
-	var due, names []string
-	for _, j := range cfg.Jobs {
-		if cfg.RunsOnItsOwn(j) && j.RunAtStart {
-			due = append(due, j.Key())
-			names = append(names, j.Name)
-		}
-	}
-	if len(due) == 0 {
+	if r.noStartRuns {
 		return
 	}
-	r.log("running at start: %s", strings.Join(names, ", "))
 	go func() {
+		if r.startReady != nil {
+			select {
+			case <-r.startReady:
+			case <-ctx.Done():
+				return
+			}
+		}
+		cfg := r.config()
+		now := time.Now()
+		var due, names []string
+		for _, j := range cfg.Jobs {
+			always := j.RunAtStart == job.AtStartAlways && cfg.RunsOnItsOwn(j)
+			if always || j.RunAtStart == job.AtStartWhenDue && r.owed(ctx, j, now) {
+				due = append(due, j.Key())
+				names = append(names, j.Name)
+			}
+		}
+		if len(due) == 0 {
+			return
+		}
+		r.log("running at start: %s", strings.Join(names, ", "))
 		for _, key := range due {
 			if ctx.Err() != nil {
 				return
@@ -1016,6 +1033,15 @@ func (r *Runner) runAtStart(ctx context.Context) {
 		}
 	}()
 }
+
+// HoldStartRuns makes the runs at start wait until ready is closed, since a
+// phone says whether it is charging and which network it is on only once the
+// engine listens. Call it before Serve.
+func (r *Runner) HoldStartRuns(ready <-chan struct{}) { r.startReady = ready }
+
+// SkipStartRuns leaves out the runs at start, for a start whose caller runs
+// the due jobs itself, as a phone's wake-up does. Call it before Serve.
+func (r *Runner) SkipStartRuns() { r.noStartRuns = true }
 
 // stopCron waits for the runs the clock started to wind down after a shutdown
 // cancelled them, so each one is still recorded.

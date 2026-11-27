@@ -6,6 +6,7 @@
 import Constants from "expo-constants";
 import { engine } from "./engine";
 import type { FindingListing, JobLearning } from "../../web/src/lib/anomalies";
+import type { RunAtStart } from "../../web/src/lib/atStart";
 import type { RefusedCertificate } from "../../web/src/lib/certificate";
 import type { Failure } from "../../web/src/lib/failure";
 import type { FortressInfo, FortressLeft, FortressPermission } from "../../web/src/lib/fortress";
@@ -161,7 +162,7 @@ export interface JobConfig {
   schedule?: string;
   watch?: boolean;
   watchSettle?: string;
-  runAtStart?: boolean;
+  runAtStart?: RunAtStart;
   disabled?: boolean;
   keepVersions?: number;
   reportOnly?: boolean;

@@ -218,3 +218,20 @@ func TestAnAddressInIPv6FormStillMatches(t *testing.T) {
 		t.Fatalf("the wifi is %q, want Home", got)
 	}
 }
+
+func TestTheFirstReportIsAwaitable(t *testing.T) {
+	s := New()
+	reported := s.Reported()
+	select {
+	case <-reported:
+		t.Fatal("a store nothing was reported to says it has a report")
+	default:
+	}
+	s.Report("", false, Wifi{})
+	s.Report("this phone is on battery", false, Wifi{})
+	select {
+	case <-reported:
+	default:
+		t.Fatal("the first report was not told")
+	}
+}

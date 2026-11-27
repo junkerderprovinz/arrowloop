@@ -332,7 +332,8 @@ off too, instead of leaving it claiming something that has stopped being true.
 
 Autostart on its own only gets the program running. A job that should sync
 *because* the machine just came on wants `runAtStart` as well, or it will sit
-there until its schedule is next due; see
+there until its schedule is next due. **When due** runs it only if its turn came
+round while the machine was off. See
 [the configuration reference](configuration.md#running-at-start).
 
 ### The notification area

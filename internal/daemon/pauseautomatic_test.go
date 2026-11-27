@@ -65,7 +65,7 @@ func TestPausedAutomaticRunsCatchNothingUp(t *testing.T) {
 }
 
 func TestPausedAutomaticRunsSkipTheRunAtStart(t *testing.T) {
-	r := requestRunner(t, job.Job{Name: "inbox", RunAtStart: true})
+	r := requestRunner(t, job.Job{Name: "inbox", RunAtStart: job.AtStartAlways})
 	pauseAutomatic(r)
 	r.runAtStart(context.Background())
 	time.Sleep(time.Second)

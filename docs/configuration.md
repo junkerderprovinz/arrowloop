@@ -63,7 +63,7 @@ manager happened to start the process in.
 | `schedule` | none | A cron expression. Left out, the job takes the default schedule; written as `""`, it only runs when somebody asks, whatever the default says. |
 | `watch` | `false` | Run when a local side changes. Needs a schedule as well; see below. |
 | `watchSettle` | `2s` | How long the tree must go quiet before a change counts. |
-| `runAtStart` | `false` | Run once as soon as the program starts, before waiting for the schedule. Fires once per start and never on a configuration reload. |
+| `runAtStart` | `false` | `true` runs the job once as soon as the program starts, before waiting for the schedule. `"due"` runs it then only if it is due, as `run-due` decides. Fires once per start and never on a configuration reload. See [Running at start](#running-at-start). |
 | `disabled` | `false` | Keeps the job in the file without running it on its own. It can still be started by hand. |
 | `exclude` | none | Globs of paths to leave alone entirely; see [Exclude patterns](#exclude-patterns). |
 | `excludeSets` | none | Names of [shared lists](#shared-lists) whose patterns the job keeps out. They are added to `exclude`. |
@@ -349,6 +349,28 @@ disabled has to mean disabled everywhere. And the runs go one after another in
 file order rather than all at once, for the same reason ordinary runs are
 serialised: they share one uplink and one disk, and a start-up burst is where
 that matters most.
+
+### Only when it is due
+
+`"runAtStart": "due"` runs the job at start only if it is due, decided the way
+[`run-due`](cli.md#run-due) decides it. A job whose turn came round while the
+machine was off runs, and so does a job that has never run. A job that ran this
+morning and is next due tonight waits for tonight. A job that failed waits until
+its next try is due, and a job without a schedule never runs at start.
+
+This is the one to pick when there are many long jobs on different schedules.
+With `true` every one of them runs at each start, one after another, which can
+take hours and gets a cloud provider to slow you down. With `"due"` a start only
+catches up what the machine missed while it was off.
+
+In the job window both are under **At program start**: **Off**, **Always**
+(`true`) and **When due** (`"due"`).
+
+On the phone the runs at start happen when the app starts the engine, once the
+app has told the engine whether the phone is charging and which network it is
+on. The wake-ups every fifteen minutes already run whatever is due, so the
+phone offers **Off** and **When due**, and **Always** only on a job that
+already has it.
 
 ## A job never overlaps itself
 

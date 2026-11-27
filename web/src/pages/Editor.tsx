@@ -16,6 +16,7 @@ import { SubCard } from '../lib/glimstone/SubCard'
 import { Toggle } from '../lib/glimstone/Toggle'
 import { JOB_WINDOW_SETTINGS, overrideAll, owns } from '../lib/follows'
 import { MODES } from '../lib/modes'
+import { AT_START, atStartOf, runAtStartFor, type AtStartChoice } from '../lib/atStart'
 import { errorText } from '../lib/errorText'
 import { useHost, type SharedLists } from '../lib/host'
 import { takesNothing } from '../lib/sharedLists'
@@ -378,7 +379,18 @@ export function JobForm({
           <QuietPeriod value={shown.quietPeriod ?? ''} onChange={(v) => patch({ quietPeriod: v || '0s' })} />
         </SettingRow>
         <SettingRow label={t('edit.runAtStart')}>
-          <Toggle checked={!!job.runAtStart} onChange={(v) => patch({ runAtStart: v })} label={t('edit.runAtStart')} hideLabel />
+          <span data-new="at-start-due" className="flex max-w-full">
+            <Selector<AtStartChoice>
+              scale="small"
+              low
+              hug
+              label={t('edit.runAtStart')}
+              hueOffset={HUE_OFFSET.atStart}
+              value={atStartOf(job.runAtStart)}
+              onChange={(v) => patch({ runAtStart: runAtStartFor(v) })}
+              options={AT_START.map((c) => ({ value: c, label: t(`atStart.${c}`), hint: t(`atStart.${c}Hint`) }))}
+            />
+          </span>
         </SettingRow>
       </SubCard>
 

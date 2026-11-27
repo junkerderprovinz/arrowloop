@@ -60,6 +60,10 @@ type Store struct {
 	wifi    Wifi
 	at      time.Time
 
+	// reported is closed by the first report.
+	reported chan struct{}
+	once     sync.Once
+
 	// now is the clock, swapped in tests. Nil means time.Now.
 	now func() time.Time
 
@@ -72,7 +76,7 @@ type Store struct {
 }
 
 // New returns an empty store that holds nothing.
-func New() *Store { return &Store{} }
+func New() *Store { return &Store{reported: make(chan struct{})} }
 
 func (s *Store) clock() time.Time {
 	if s.now != nil {
@@ -101,7 +105,12 @@ func (s *Store) Report(reason string, offline bool, wifi Wifi) {
 	s.offline = offline
 	s.wifi = wifi
 	s.at = s.clock()
+	s.once.Do(func() { close(s.reported) })
 }
+
+// Reported is closed once something has been reported, so a run that must
+// know the device's state can wait for it.
+func (s *Store) Reported() <-chan struct{} { return s.reported }
 
 // Wifi returns the name of the wifi this machine's traffic leaves by, or ""
 // when that is not certain: no wifi was reported, the report is stale, or the

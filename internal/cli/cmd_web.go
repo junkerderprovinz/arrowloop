@@ -37,6 +37,7 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 	configPath := fset.String("config", o.Config, "the configuration file")
 	addr := fset.String("addr", defaultAddr(), "address to listen on")
 	noSchedule := fset.Bool("no-schedule", false, "serve the interface only, do not run the schedules")
+	noStartRuns := fset.Bool("no-start-runs", false, "leave out the runs at start, for a caller that runs the due jobs itself")
 	verbose := fset.Bool("v", false, "let rclone report what it is doing underneath")
 	if err := fset.Parse(args); err != nil {
 		return err
@@ -114,6 +115,12 @@ func (o Options) cmdWeb(ctx context.Context, args []string) error {
 		held.CheckRoutes(hold.Routed)
 	}
 	runner.SetCondition(held.Condition())
+	switch {
+	case *noStartRuns:
+		runner.SkipStartRuns()
+	case deployed == "phone":
+		runner.HoldStartRuns(held.Reported())
+	}
 	if file := os.Getenv(accessVar); file != "" {
 		runner.SetAccess(fileAccess(file))
 	}

@@ -266,9 +266,7 @@ object Engine {
         ensureConfig(context)
 
         val log = File(home(context), "engine.log")
-        val builder = ProcessBuilder(
-            binary.absolutePath, "web", "-config", config(context).absolutePath,
-        )
+        val builder = ProcessBuilder(engineCommand(binary.absolutePath, config(context).absolutePath, screens))
         builder.directory(home(context))
         builder.environment()["ARROWLOOP_ADDR"] = ADDRESS
         builder.environment()["ARROWLOOP_APP_TOKEN"] = renewToken(context)
@@ -367,4 +365,14 @@ object Engine {
      */
     @Volatile
     var screens = false
+}
+
+/**
+ * The engine's command line. A wake-up asks for the due jobs as soon as the
+ * engine answers and stops it when they are done, so the engine leaves the
+ * runs at start to the screens: one it started for itself would be cut off.
+ */
+internal fun engineCommand(binary: String, config: String, forScreens: Boolean): List<String> {
+    val command = listOf(binary, "web", "-config", config)
+    return if (forScreens) command else command + "-no-start-runs"
 }

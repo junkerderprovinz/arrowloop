@@ -89,6 +89,8 @@ run is due straight away. A job that failed waits out its retry pause before it
 is tried again. Jobs without a schedule and paused jobs are left alone. So the
 timer only has to come round at least as often as your most frequent schedule:
 with a timer every 15 minutes, a job set for 03:00 runs between 03:00 and 03:15.
+A program that stays up can make the same decision once at start, with
+[`"runAtStart": "due"`](configuration.md#only-when-it-is-due).
 
 Each job gets one line on standard output, and the log goes to standard error,
 so `run-due > results.txt` keeps the results apart:

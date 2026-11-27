@@ -3,6 +3,7 @@
 
 /** Which way a job is allowed to write. */
 import type { FindingListing, JobLearning } from './anomalies'
+import type { RunAtStart } from './atStart'
 import type { RefusedCertificate } from './certificate'
 import type { Failure } from './failure'
 import type { ImportPlan } from './importPlan'
@@ -334,7 +335,7 @@ export type RawJob = {
   disabled?: boolean
   watch?: boolean
   watchSettle?: string
-  runAtStart?: boolean
+  runAtStart?: RunAtStart
   quietPeriod?: string
   /** Keeps a file on the source of a one-way job until it is this many days old. */
   minAgeDays?: number

@@ -377,6 +377,41 @@ func (v VPNTunnel) MarshalJSON() ([]byte, error) {
 	return json.Marshal(string(v))
 }
 
+// AtStart says whether a job runs when the program starts: not at all, every
+// time, or only when it is due, as run-due would decide.
+type AtStart string
+
+const (
+	AtStartAlways  AtStart = "always"
+	AtStartWhenDue AtStart = "due"
+)
+
+// UnmarshalJSON reads "due", and true or false from before there was a choice.
+func (a *AtStart) UnmarshalJSON(data []byte) error {
+	var on bool
+	if err := json.Unmarshal(data, &on); err == nil {
+		*a = ""
+		if on {
+			*a = AtStartAlways
+		}
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil || s != string(AtStartWhenDue) {
+		return fmt.Errorf("runAtStart is %s; it has to be true, false or \"due\"", data)
+	}
+	*a = AtStartWhenDue
+	return nil
+}
+
+// MarshalJSON writes AtStartAlways as true, which every version reads.
+func (a AtStart) MarshalJSON() ([]byte, error) {
+	if a == AtStartAlways {
+		return []byte("true"), nil
+	}
+	return json.Marshal(string(a))
+}
+
 // Notify says where messages go: one channel per destination, in the format
 // of the kit's notify package, Shoutrrr's beside the kit's kinds. A file from
 // before the list holds one block per service instead, which is read into
@@ -457,7 +492,7 @@ type Job struct {
 	// RunAtStart runs the job once when the program starts, so a machine that
 	// was off overnight does not wait for the next scheduled turn. It fires
 	// once per program start, never on a configuration reload.
-	RunAtStart bool `json:"runAtStart,omitempty"`
+	RunAtStart AtStart `json:"runAtStart,omitempty"`
 
 	Disabled bool `json:"disabled,omitempty"`
 
