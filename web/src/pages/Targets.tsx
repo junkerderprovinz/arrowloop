@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { copyText } from '@glimstone/core'
 import { ConnectionRow } from '@glimstone/react/ConnectionRow'
 
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
@@ -1181,7 +1182,8 @@ function DriveRow({ volume, onChanged }: { volume: Volume; onChanged: () => void
           title={copied ? t('targets.copied') : t('targets.copyPath')}
           labelKey={copied ? 'targets.copied' : 'targets.copyPath'}
           onClick={() => {
-            void navigator.clipboard?.writeText(volume.path).then(() => {
+            void copyText(volume.path).then((done) => {
+              if (!done) return
               setCopied(true)
               setTimeout(() => setCopied(false), 1500)
             })

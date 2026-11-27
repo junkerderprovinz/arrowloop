@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { copyText } from '@glimstone/core'
 
 import { CryptoDonateDialog } from '../lib/glimstone/CryptoDonateDialog'
 import { CoinMark } from './donateMarks'
@@ -59,7 +60,7 @@ export function CryptoDonate({ onClose }: { onClose: () => void }) {
       renderQr={(value) => <QRCode value={value} size={168} />}
       renderMark={(c) => <CoinMark coin={c.id} size={22} />}
       onCopy={(_, n) => {
-        void navigator.clipboard?.writeText(n.address).then(() => setCopied(true))
+        void copyText(n.address).then(setCopied)
       }}
       onClose={onClose}
       ref={cardRef}

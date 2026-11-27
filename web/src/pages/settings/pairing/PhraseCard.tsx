@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { copyText } from '@glimstone/core'
 
 import { ConfirmWindow } from '../../../components/ConfirmWindow'
 import { Dialog } from '../../../components/Dialog'
@@ -112,8 +113,7 @@ export function PhraseCard({
 
   async function copy() {
     if (!phrase) return
-    await navigator.clipboard?.writeText(phrase.phrase)
-    setCopied(true)
+    setCopied(await copyText(phrase.phrase))
   }
 
   // Where anyone can sign in, the words want a fresh sign-in, and the

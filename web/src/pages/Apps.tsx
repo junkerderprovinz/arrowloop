@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { createPortal } from 'react-dom'
+import { copyText } from '@glimstone/core'
 
 import { QRCode } from '../components/QRCode'
 import { Stack } from '../components/Shell'
@@ -251,7 +252,8 @@ function ServerCard({ version }: { version: string }) {
               name: t('apps.docker'),
               sub: copied ? t('apps.copied') : t('apps.dockerSub'),
               onClick: () => {
-                void navigator.clipboard?.writeText(DOCKER_RUN).then(() => {
+                void copyText(DOCKER_RUN).then((done) => {
+                  if (!done) return
                   setCopied(true)
                   setTimeout(() => setCopied(false), 1800)
                 })

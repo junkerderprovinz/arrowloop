@@ -186,12 +186,28 @@ describe('the targets a union or combine joins', () => {
 describe("a saved target's rclone id", () => {
   it('shows on its form with a button that copies it', async () => {
     const writeText = vi.fn(() => Promise.resolve())
+    Object.defineProperty(window, 'isSecureContext', { value: true, configurable: true })
     Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
     savedTargets = [cern]
     const dialog = await edit('CERN Particle Accelerator')
     expect(within(dialog).getByText('3f9a1c02b7de')).toBeTruthy()
     fireEvent.click(within(dialog).getByRole('button', { name: 'Copy the ID' }))
     expect(writeText).toHaveBeenCalledWith('3f9a1c02b7de')
+  })
+
+  it('copies on a page opened over plain http, where the browser has no clipboard api', async () => {
+    let copied = ''
+    Object.defineProperty(window, 'isSecureContext', { value: false, configurable: true })
+    Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
+    document.execCommand = vi.fn(() => {
+      copied = document.body.querySelector<HTMLTextAreaElement>(':scope > textarea')?.value ?? ''
+      return true
+    })
+    savedTargets = [cern]
+    const dialog = await edit('CERN Particle Accelerator')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Copy the ID' }))
+    expect(await within(dialog).findByRole('button', { name: 'Copied' })).toBeTruthy()
+    expect(copied).toBe('3f9a1c02b7de')
   })
 
   it('is not shown for a target that is not saved yet', async () => {
