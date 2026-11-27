@@ -1,10 +1,12 @@
 package remotes
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"maps"
-	"strconv"
+	"slices"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -99,15 +101,16 @@ func Rename(id, label string) error {
 	return nil
 }
 
-// Add writes a new target called label under an id made from it, and returns
-// the id.
+// Add writes a new target called label under a fresh id, and returns the id.
+// The id has nothing of the label in it, so a rename cannot leave the target
+// with an id that names something else.
 func Add(label, backend string, settings map[string]string) (string, error) {
 	label = strings.TrimSpace(label)
 	data := config.LoadedData()
 	if err := checkLabel(data, "", label); err != nil {
 		return "", err
 	}
-	id := freeID(data, label)
+	id := freeID(data)
 	with := maps.Clone(settings)
 	if with == nil {
 		with = map[string]string{}
@@ -116,49 +119,16 @@ func Add(label, backend string, settings map[string]string) (string, error) {
 	return id, Create(id, backend, with)
 }
 
-// freeID makes an id for a target called label: the label with what rclone
-// would not take in a remote's name folded into hyphens, numbered when a
-// target has it already. Case is ignored in the comparison, since two ids
-// that differ only there look like one in a job's path.
-func freeID(data config.Storage, label string) string {
-	base := idOf(label)
-	taken := func(id string) bool {
-		for _, other := range data.GetSectionList() {
-			if strings.EqualFold(other, id) {
-				return true
-			}
-		}
-		return false
-	}
-	if !taken(base) {
-		return base
-	}
-	for n := 2; ; n++ {
-		if next := base + "-" + strconv.Itoa(n); !taken(next) {
-			return next
+// freeID makes a random id that no target has yet. Case is ignored in the
+// comparison, since two ids that differ only there look like one in a job's
+// path.
+func freeID(data config.Storage) string {
+	for {
+		b := make([]byte, 6)
+		_, _ = rand.Read(b)
+		id := hex.EncodeToString(b)
+		if !slices.ContainsFunc(data.GetSectionList(), func(other string) bool { return strings.EqualFold(other, id) }) {
+			return id
 		}
 	}
-}
-
-// idOf keeps a label's letters, digits and the punctuation rclone allows in a
-// remote's name. An id of one character would read as a Windows drive letter.
-func idOf(label string) string {
-	var b strings.Builder
-	for _, r := range label {
-		switch {
-		case unicode.IsLetter(r), unicode.IsDigit(r), strings.ContainsRune("_.+@", r):
-			b.WriteRune(r)
-		default:
-			b.WriteRune('-')
-		}
-	}
-	id := b.String()
-	for strings.Contains(id, "--") {
-		id = strings.ReplaceAll(id, "--", "-")
-	}
-	id = strings.Trim(id, "-.")
-	if utf8.RuneCountInString(id) < 2 {
-		return "target"
-	}
-	return id
 }
