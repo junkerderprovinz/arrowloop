@@ -56,11 +56,13 @@ import { errorText } from '../lib/errorText'
 import { FTP_TLS, ftpTls, withFtpTls } from '../lib/ftpTls'
 import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from '../lib/kdriveRoot'
 import { ToggleRow } from '../components/ToggleRow'
+import { TargetId, UpstreamsPick, WrapPick } from '../components/WrappedTarget'
 import { SecretRow } from './settings/rows'
 import { failureLine, type Failure } from '../lib/failure'
 import { CERTIFICATE_KEY, type RefusedCertificate } from '../lib/certificate'
 import { anySaved } from '../lib/savedSettings'
 import { checkWord } from '../lib/targetCheck'
+import { withTargetIds } from '../lib/wrappedTarget'
 
 /**
  * The storage targets and registered drives a job's sides can point at, one
@@ -131,6 +133,7 @@ export function Targets() {
           group={group}
           hueIndex={i}
           rows={rows[group]}
+          targets={remotes}
           marked={group === GROUPS.find((g) => rows[g].length > 0)}
           backends={backends}
           providers={providers.filter((p) => p.group === group || (group === 'protocol' && p.group === 'layered'))}
@@ -148,7 +151,7 @@ export function Targets() {
           backends={backends}
           providers={providers}
           unlisted={unlisted}
-          taken={remotes.map((r) => r.label || r.name)}
+          targets={remotes}
           onDone={(saved) => {
             setAdding(false)
             if (saved) refresh()
@@ -202,6 +205,7 @@ function Storage({
   group,
   hueIndex,
   rows,
+  targets,
   marked,
   backends,
   providers,
@@ -210,6 +214,8 @@ function Storage({
   group: Group
   hueIndex: number
   rows: Remote[]
+  /** Every saved target, which a wrapping target picks from. */
+  targets: Remote[]
   /** Carries the What's new mark on its first row, being the first card with any. */
   marked: boolean
   backends: Backend[]
@@ -239,6 +245,7 @@ function Storage({
         <RemoteForm
           title={t('targets.editTitle', { name: editing.label || editing.name })}
           backends={backends}
+          targets={targets}
           existing={editing}
           // The engine identifies the product from the target's settings
           // (internal/remotes/identify.go).
@@ -262,18 +269,18 @@ function AddTarget({
   backends,
   providers,
   unlisted,
-  taken,
+  targets,
   onDone,
 }: {
   backends: Backend[]
   providers: Provider[]
   unlisted: Backend[]
-  taken: string[]
+  targets: Remote[]
   onDone: (saved: boolean) => void
 }) {
   const { t, lang } = useT()
   const [picked, setPicked] = useState<Picked | null>(null)
-  const form = useRemoteForm({ backends, picked, taken, onDone })
+  const form = useRemoteForm({ backends, picked, targets, onDone })
   const { trying, tried, checking, busy, kind, name } = form
 
   return (
@@ -520,7 +527,7 @@ function useRemoteForm({
   backends,
   picked,
   edited,
-  taken,
+  targets,
   existing,
   onDone,
 }: {
@@ -529,8 +536,8 @@ function useRemoteForm({
   picked?: Picked | null
   /** The product a saved target was made from, null when the engine cannot tell. */
   edited?: Provider | null
-  /** The labels already in use, so a suggested one does not collide. */
-  taken?: string[]
+  /** Every saved target: a suggested name must not collide, and a wrapping target picks one. */
+  targets: Remote[]
   existing?: Remote
   onDone: (saved: boolean) => void
 }) {
@@ -540,8 +547,19 @@ function useRemoteForm({
   const preset = provider?.preset
   // The name is suggested from the product's own, numbered when taken (`OpenCloud-2`).
   const start = () => ({
-    name: existing ? existing.label || existing.name : provider ? suggestTargetName(provider.name, taken ?? []) : '',
-    values: { ...(preset ?? {}), ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])) },
+    name: existing
+      ? existing.label || existing.name
+      : provider
+        ? suggestTargetName(
+            provider.name,
+            targets.map((r) => r.label || r.name),
+          )
+        : '',
+    values: withTargetIds(
+      { ...(preset ?? {}), ...Object.fromEntries((existing?.settings ?? []).map((s) => [s.key, s.value])) },
+      targets,
+      (existing?.type ?? picked?.kind) === 'combine',
+    ),
   })
   const [name, setName] = useState(() => start().name)
   const kind = existing?.type ?? picked?.kind ?? backends[0]?.name ?? ''
@@ -652,8 +670,31 @@ function useRemoteForm({
   // it is changed, which tells the engine to keep it (remotes.Save). An empty
   // field shows rclone's name, which its documentation uses, and the default
   // goes in the bubble, where nobody takes it for a value already filled in.
+  // A target cannot be built on itself.
+  const others = useMemo(() => targets.filter((r) => r.name !== existing?.name), [targets, existing])
+  const setOption = (key: string) => (next: string) => setValues((prev) => ({ ...prev, [key]: next }))
+
   const plainField = (o: Backend['options'][number]) =>
-    kind === 'ftp' && o.name === 'explicit_tls' ? null : kind === 'kdrive' && o.name === 'root_folder_id' ? (
+    kind === 'ftp' && o.name === 'explicit_tls' ? null : o.name === 'remote' ? (
+      <WrapPick
+        key={o.name}
+        label={optionLabel(o.name, t, kind)}
+        hint={optionHint(o, t, provider)}
+        value={values.remote ?? ''}
+        targets={others}
+        onChange={setOption('remote')}
+      />
+    ) : o.name === 'upstreams' ? (
+      <UpstreamsPick
+        key={o.name}
+        label={optionLabel(o.name, t, kind)}
+        hint={optionHint(o, t, provider)}
+        value={values.upstreams ?? ''}
+        targets={others}
+        combine={kind === 'combine'}
+        onChange={setOption('upstreams')}
+      />
+    ) : kind === 'kdrive' && o.name === 'root_folder_id' ? (
       <KdriveRootField
         key={o.name}
         value={values.root_folder_id ?? ''}
@@ -783,6 +824,7 @@ function useRemoteForm({
           {nameRefused}
         </p>
       )}
+      {existing && <TargetId id={existing.name} />}
       {first.map(field)}
       {question && (
         <FieldRow label={t(questionLabel(question))} hint={t(questionHint(question))}>
@@ -879,18 +921,20 @@ function useRemoteForm({
 function RemoteForm({
   title,
   backends,
+  targets,
   provider,
   existing,
   onDone,
 }: {
   title: string
   backends: Backend[]
+  targets: Remote[]
   provider: Provider | null
   existing: Remote
   onDone: (saved: boolean) => void
 }) {
   const { t, lang } = useT()
-  const form = useRemoteForm({ backends, edited: provider, existing, onDone })
+  const form = useRemoteForm({ backends, edited: provider, targets, existing, onDone })
   const { trying, tried, refused, unsaved, busy, checking, kind, name } = form
 
   return (

@@ -15,6 +15,8 @@ import { KDRIVE_ROOTS, kdriveRoot, kdriveRootValue } from "../../../web/src/lib/
 import { anySaved, settingsToSave } from "../../../web/src/lib/savedSettings";
 import { oneTimeCode, questionHint, questionLabel, typedAnswer } from "../../../web/src/lib/setupQuestion";
 import { suggestTargetName, TARGET_LABEL_MAX } from "../../../web/src/lib/targetName";
+import { withTargetIds } from "../../../web/src/lib/wrappedTarget";
+import { TargetIdRow, UpstreamsField, WrapField } from "../wrappedTarget";
 import { space } from "../theme";
 import { Body, Button, Caption, Choice, Empty, Page, Pair, PickRow, Row, Section, Title, Toggle } from "../ui";
 
@@ -35,6 +37,8 @@ export function TargetEdit() {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [backends, setBackends] = useState<Backend[]>([]);
   const [existing, setExisting] = useState<Remote | null>(null);
+  // Every saved target but this one, which a wrapping target picks from.
+  const [targets, setTargets] = useState<Remote[]>([]);
   const [name, setName] = useState(editing ?? "");
   const [values, setValues] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
@@ -57,13 +61,14 @@ export function TargetEdit() {
         setBackends([...s.backends, ...s.unlisted]);
         const found = s.remotes.find((r) => r.name === editing) ?? null;
         setExisting(found);
+        setTargets(s.remotes.filter((r) => r.name !== editing));
         if (found) {
           setName(found.label || found.name);
           const start: Record<string, string> = {};
           // A stored secret arrives as the placeholder, which saving sends
           // back untouched so the engine keeps it.
           for (const setting of found.settings) start[setting.key] = setting.value;
-          setValues(start);
+          setValues(withTargetIds(start, s.remotes, found.type === "combine"));
         }
       },
       (e: Error) => setError(e.message),
@@ -167,6 +172,31 @@ export function TargetEdit() {
         />
       );
     }
+    if (option.name === "remote") {
+      return (
+        <WrapField
+          key={option.name}
+          label={optionLabel(option.name, t, backendName)}
+          hint={optionHint(option, t, provider)}
+          value={values.remote ?? ""}
+          targets={targets}
+          onChange={(next) => setValues((old) => ({ ...old, remote: next }))}
+        />
+      );
+    }
+    if (option.name === "upstreams") {
+      return (
+        <UpstreamsField
+          key={option.name}
+          label={optionLabel(option.name, t, backendName)}
+          hint={optionHint(option, t, provider)}
+          value={values.upstreams ?? ""}
+          targets={targets}
+          combine={backendName === "combine"}
+          onChange={(next) => setValues((old) => ({ ...old, upstreams: next }))}
+        />
+      );
+    }
     if (option.type === "bool") {
       // Off is left unsaved where it is rclone's default.
       return (
@@ -251,6 +281,7 @@ export function TargetEdit() {
           maxLength={TARGET_LABEL_MAX}
           error={nameError || undefined}
         />
+        {existing ? <TargetIdRow id={existing.name} /> : null}
       </Section>
 
       {provider?.auth === "oauth" && provider.authUrl ? (

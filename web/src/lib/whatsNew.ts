@@ -63,6 +63,26 @@ const JOBS: TranslationKey[] = ['nav.jobs']
 /** Every release that brought something new, newest first. */
 export const RELEASES: Release[] = [
   {
+    after: '2.9.5',
+    changes: [
+      {
+        id: 'wrap-pick',
+        at: ['/targets', '/settings/targets'],
+        via: 'connect',
+        where: ['nav.targets'],
+        text: 'new.change.wrapPick',
+        names: { encrypted: 'provider.crypt', union: 'provider.union', combine: 'provider.combine' },
+      },
+      {
+        id: 'target-id',
+        at: ['/targets', '/settings/targets'],
+        where: ['nav.targets'],
+        text: 'new.change.targetId',
+        names: { id: 'targets.remoteId' },
+      },
+    ],
+  },
+  {
     after: '2.9.3',
     changes: [
       {
