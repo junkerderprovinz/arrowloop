@@ -1224,6 +1224,7 @@ const sv: Translations = {
   'side.noTargets': 'Inget moln eller ingen server är ansluten än. Du kan ansluta en under Mer, Mål.',
   'side.inTarget': 'Mapp i {name}',
   'side.noSuchTarget': 'Det finns inget mål som heter {name}. Mappar på den här telefonen börjar med /, till exempel /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Mappar på den här telefonen börjar med /, till exempel /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

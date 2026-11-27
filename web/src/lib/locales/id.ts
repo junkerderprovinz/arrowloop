@@ -1224,6 +1224,7 @@ const id: Translations = {
   'side.noTargets': 'Belum ada awan atau server yang terhubung. Kamu bisa menghubungkannya di Lainnya, Tujuan.',
   'side.inTarget': 'Folder di {name}',
   'side.noSuchTarget': 'Tidak ada tujuan bernama {name}. Folder di ponsel ini diawali dengan /, misalnya /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Folder di ponsel ini diawali dengan /, misalnya /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

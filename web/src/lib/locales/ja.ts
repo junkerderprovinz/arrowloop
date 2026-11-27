@@ -1224,6 +1224,7 @@ const ja: Translations = {
   'side.noTargets': 'クラウドやサーバーはまだ接続されていません。その他 > 接続先 から接続できます。',
   'side.inTarget': '{name} のフォルダー',
   'side.noSuchTarget': '{name} という接続先はありません。この端末のフォルダーは / で始まります（例: /storage/emulated/0/DCIM）。',
+  'side.notAbsolute': 'この端末のフォルダーは / で始まります（例: /storage/emulated/0/DCIM）。',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

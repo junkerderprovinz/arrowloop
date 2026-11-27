@@ -1224,6 +1224,7 @@ const ru: Translations = {
   'side.noTargets': 'Пока не подключено ни одного облака или сервера. Подключить его можно в разделе Ещё, Назначения.',
   'side.inTarget': 'Папка в {name}',
   'side.noSuchTarget': 'Назначения с именем {name} нет. Папки на этом телефоне начинаются с /, например /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Папки на этом телефоне начинаются с /, например /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -1224,6 +1224,7 @@ const el: Translations = {
   'side.noTargets': 'Δεν έχει συνδεθεί ακόμα κανένα cloud ή διακομιστής. Μπορείς να συνδέσεις έναν από Περισσότερα, Προορισμοί.',
   'side.inTarget': 'Φάκελος στο {name}',
   'side.noSuchTarget': 'Δεν υπάρχει προορισμός με το όνομα {name}. Οι φάκελοι σε αυτό το τηλέφωνο ξεκινούν με /, όπως /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Οι φάκελοι σε αυτό το τηλέφωνο ξεκινούν με /, όπως /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

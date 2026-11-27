@@ -1224,6 +1224,7 @@ const pl: Translations = {
   'side.noTargets': 'Nie połączono jeszcze żadnej chmury ani serwera. Możesz to zrobić w sekcji Więcej, Cele.',
   'side.inTarget': 'Folder w {name}',
   'side.noSuchTarget': 'Nie ma celu o nazwie {name}. Foldery w tym telefonie zaczynają się od /, na przykład /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Foldery w tym telefonie zaczynają się od /, na przykład /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

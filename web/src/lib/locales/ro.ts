@@ -1224,6 +1224,7 @@ const ro: Translations = {
   'side.noTargets': 'Încă nu este conectat niciun cloud sau server. Poți conecta unul din Mai mult, Destinații.',
   'side.inTarget': 'Dosar în {name}',
   'side.noSuchTarget': 'Nu există nicio destinație numită {name}. Dosarele de pe acest telefon încep cu /, de exemplu /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Dosarele de pe acest telefon încep cu /, de exemplu /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

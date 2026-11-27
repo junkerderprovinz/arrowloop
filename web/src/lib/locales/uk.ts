@@ -1224,6 +1224,7 @@ const uk: Translations = {
   'side.noTargets': 'Ще не підключено жодної хмари чи сервера. Підключити можна в розділі Ще, Призначення.',
   'side.inTarget': 'Папка в {name}',
   'side.noSuchTarget': 'Призначення з назвою {name} немає. Теки на цьому телефоні починаються з /, наприклад /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Теки на цьому телефоні починаються з /, наприклад /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

@@ -1224,6 +1224,7 @@ const es: Translations = {
   'side.noTargets': 'Todavía no hay ninguna nube ni servidor conectado. Puedes conectar uno en Más, Destinos.',
   'side.inTarget': 'Carpeta en {name}',
   'side.noSuchTarget': 'No hay ningún destino llamado {name}. Las carpetas de este teléfono empiezan por /, como /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Las carpetas de este teléfono empiezan por /, como /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

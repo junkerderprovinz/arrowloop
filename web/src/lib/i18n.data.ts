@@ -1301,6 +1301,7 @@ export const en = {
   'side.noTargets': 'No cloud or server is connected yet. You can connect one under More, Targets.',
   'side.inTarget': 'Folder in {name}',
   'side.noSuchTarget': 'There\'s no target called {name}. Folders on this phone start with /, like /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Folders on this phone start with /, like /storage/emulated/0/DCIM.',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.
@@ -3877,6 +3878,7 @@ export const de: Translations = {
   'side.noTargets': 'Noch ist keine Cloud und kein Server verbunden. Verbinden kannst du einen unter Mehr, Ziele.',
   'side.inTarget': 'Ordner in {name}',
   'side.noSuchTarget': 'Ein Ziel namens {name} gibt es nicht. Ordner auf diesem Telefon beginnen mit /, etwa /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Ordner auf diesem Telefon beginnen mit /, etwa /storage/emulated/0/DCIM.',
 
   // A one-way job's mode. Two of the three delete, so each hint says exactly
   // what it removes and what it leaves.

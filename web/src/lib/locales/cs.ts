@@ -1224,6 +1224,7 @@ const cs: Translations = {
   'side.noTargets': 'Zatím není připojený žádný cloud ani server. Připojit ho můžete v části Více, Cíle.',
   'side.inTarget': 'Složka v {name}',
   'side.noSuchTarget': 'Cíl s názvem {name} neexistuje. Složky v tomto telefonu začínají znakem /, například /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Složky v tomto telefonu začínají znakem /, například /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

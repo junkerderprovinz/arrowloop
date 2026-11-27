@@ -1224,6 +1224,7 @@ const et: Translations = {
   'side.noTargets': 'Ühtegi pilve ega serverit pole veel ühendatud. Saad selle ühendada jaotises Veel, Sihtkohad.',
   'side.inTarget': 'Kaust kohas {name}',
   'side.noSuchTarget': 'Sihtkohta nimega {name} ei ole. Selle telefoni kaustad algavad märgiga /, näiteks /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Selle telefoni kaustad algavad märgiga /, näiteks /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

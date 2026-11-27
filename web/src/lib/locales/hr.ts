@@ -1224,6 +1224,7 @@ const hr: Translations = {
   'side.noTargets': 'Još nije povezan nijedan oblak ni poslužitelj. Možeš ga povezati pod Više, Odredišta.',
   'side.inTarget': 'Mapa u {name}',
   'side.noSuchTarget': 'Ne postoji odredište s imenom {name}. Mape na ovom telefonu počinju znakom /, na primjer /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Mape na ovom telefonu počinju znakom /, na primjer /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

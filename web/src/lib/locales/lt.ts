@@ -1224,6 +1224,7 @@ const lt: Translations = {
   'side.noTargets': 'Dar neprijungtas joks debesis ar serveris. Prijungti galite skiltyje Daugiau, Paskirtys.',
   'side.inTarget': 'Aplankas paskirtyje {name}',
   'side.noSuchTarget': 'Paskirties pavadinimu {name} nėra. Šio telefono aplankai prasideda simboliu /, pavyzdžiui, /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Šio telefono aplankai prasideda simboliu /, pavyzdžiui, /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

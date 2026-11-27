@@ -20,10 +20,16 @@ export function remoteOf(side: string | undefined): string | undefined {
  * What a folder typed on the phone side of a job becomes. rclone takes any
  * `name:` in front for a target, so `C:/Program` would turn into a target
  * called C. On the phone only the names of the targets count; any other is
- * returned as `stray`, so the form can say why it was not taken.
+ * returned as `stray`, so the form can say why it was not taken. A folder that
+ * does not start with / is `relative`, since the engine would look for it in
+ * its own folder inside the app.
  */
-export function phoneFolder(typed: string, targets: readonly string[]): { side: string } | { stray: string } {
+export function phoneFolder(
+  typed: string,
+  targets: readonly string[],
+): { side: string } | { stray: string } | { relative: true } {
   const remote = remoteOf(typed);
-  if (remote === undefined || targets.includes(remote)) return { side: typed };
+  if (remote === undefined) return typed === "" || typed.startsWith("/") ? { side: typed } : { relative: true };
+  if (targets.includes(remote)) return { side: typed };
   return { stray: remote };
 }

@@ -681,9 +681,10 @@ function SideCard({
   const mark = sideMark(side, remotes);
   const access = useFileAccess();
   const [picking, setPicking] = useState(false);
-  // A folder typed on the phone that names no target, kept to be shown with
-  // the reason rather than written as a side that would point at one.
-  const [stray, setStray] = useState<{ typed: string; name: string } | null>(null);
+  // A folder typed on the phone that names no target or does not start at
+  // the root, kept to be shown with the reason rather than written as a side
+  // that would point somewhere else.
+  const [badFolder, setBadFolder] = useState<{ typed: string; why: string } | null>(null);
 
   // Kept apart from the side itself, since a side on the phone with no folder
   // yet is as empty as one that is nowhere.
@@ -697,7 +698,7 @@ function SideCard({
   const folder = inTarget ? side.slice(where.length + 1) : side;
   const choose = (next: string) => {
     if (next === where) return;
-    setStray(null);
+    setBadFolder(null);
     setWhere(next);
     onChange(next === PHONE ? "" : `${next}:`);
   };
@@ -770,15 +771,20 @@ function SideCard({
           {where === PHONE && access === false ? <AccessNotice /> : null}
           <Field
             label={inTarget ? t("side.inTarget", { name: targetLabel(where) }) : t("edit.folderPath")}
-            value={stray?.typed ?? folder}
+            value={badFolder?.typed ?? folder}
             onChange={(typed) => {
               if (inTarget) return onChange(`${where}:${typed}`);
               const read = phoneFolder(typed, places);
-              setStray("stray" in read ? { typed, name: read.stray } : null);
-              onChange("stray" in read ? "" : read.side);
+              if ("side" in read) {
+                setBadFolder(null);
+                return onChange(read.side);
+              }
+              const why = "stray" in read ? t("side.noSuchTarget", { name: read.stray }) : t("side.notAbsolute");
+              setBadFolder({ typed, why });
+              onChange("");
             }}
             placeholder={inTarget ? "Photos" : "/storage/emulated/0/DCIM"}
-            error={stray ? t("side.noSuchTarget", { name: stray.name }) : error}
+            error={badFolder?.why ?? error}
           />
           <Button
             label={t("pick.title")}
@@ -793,7 +799,7 @@ function SideCard({
         start={side}
         within={inTarget ? `${where}:` : ""}
         onPick={(path) => {
-          setStray(null);
+          setBadFolder(null);
           onChange(path);
           setPicking(false);
         }}

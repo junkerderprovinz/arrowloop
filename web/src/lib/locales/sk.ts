@@ -1224,6 +1224,7 @@ const sk: Translations = {
   'side.noTargets': 'Zatiaľ nie je pripojený žiadny cloud ani server. Pripojiť ho môžete v časti Viac, Ciele.',
   'side.inTarget': 'Priečinok v {name}',
   'side.noSuchTarget': 'Cieľ s názvom {name} neexistuje. Priečinky v tomto telefóne sa začínajú znakom /, napríklad /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Priečinky v tomto telefóne sa začínajú znakom /, napríklad /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

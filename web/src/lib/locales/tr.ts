@@ -1224,6 +1224,7 @@ const tr: Translations = {
   'side.noTargets': 'Henüz bağlı bir bulut ya da sunucu yok. Daha fazla, Hedefler altından bir tane bağlayabilirsin.',
   'side.inTarget': '{name} içindeki klasör',
   'side.noSuchTarget': '{name} adında bir hedef yok. Bu telefondaki klasörler / ile başlar, örneğin /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Bu telefondaki klasörler / ile başlar, örneğin /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

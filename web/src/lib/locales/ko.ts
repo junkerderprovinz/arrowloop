@@ -1224,6 +1224,7 @@ const ko: Translations = {
   'side.noTargets': '아직 연결된 클라우드나 서버가 없습니다. 더보기 > 대상에서 연결할 수 있습니다.',
   'side.inTarget': '{name}의 폴더',
   'side.noSuchTarget': '{name}(이)라는 대상이 없습니다. 이 휴대폰의 폴더는 /로 시작합니다. 예: /storage/emulated/0/DCIM',
+  'side.notAbsolute': '이 휴대폰의 폴더는 /로 시작합니다. 예: /storage/emulated/0/DCIM',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

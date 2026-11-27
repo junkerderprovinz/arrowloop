@@ -1224,6 +1224,7 @@ const zh: Translations = {
   'side.noTargets': '还没有连接任何云或服务器。你可以在更多 > 目标中连接。',
   'side.inTarget': '{name} 中的文件夹',
   'side.noSuchTarget': '没有名为 {name} 的目标。这台手机上的文件夹以 / 开头，例如 /storage/emulated/0/DCIM。',
+  'side.notAbsolute': '这台手机上的文件夹以 / 开头，例如 /storage/emulated/0/DCIM。',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

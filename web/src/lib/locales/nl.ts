@@ -1224,6 +1224,7 @@ const nl: Translations = {
   'side.noTargets': 'Er is nog geen cloud of server verbonden. Je kunt er een verbinden onder Meer, Doelen.',
   'side.inTarget': 'Map in {name}',
   'side.noSuchTarget': 'Er is geen doel met de naam {name}. Mappen op deze telefoon beginnen met /, zoals /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Mappen op deze telefoon beginnen met /, zoals /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

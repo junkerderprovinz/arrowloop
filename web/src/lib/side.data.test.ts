@@ -31,6 +31,10 @@ describe('phoneFolder', () => {
     expect(phoneFolder('gdriv:Photos', targets)).toEqual({ stray: 'gdriv' })
   })
 
+  it.each(['Pictures/Fotos', 'DCIM', './DCIM', '~/DCIM'])('refuses %s, which does not start at the root', (typed) => {
+    expect(phoneFolder(typed, targets)).toEqual({ relative: true })
+  })
+
   it('lets the field be emptied', () => {
     expect(phoneFolder('', targets)).toEqual({ side: '' })
   })

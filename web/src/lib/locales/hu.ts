@@ -1224,6 +1224,7 @@ const hu: Translations = {
   'side.noTargets': 'Még nincs összekapcsolt felhő vagy szerver. Itt kapcsolhatsz össze egyet: Továbbiak, Célok.',
   'side.inTarget': 'Mappa itt: {name}',
   'side.noSuchTarget': 'Nincs {name} nevű cél. A telefon mappái / jellel kezdődnek, például /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'A telefon mappái / jellel kezdődnek, például /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

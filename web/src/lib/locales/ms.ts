@@ -1224,6 +1224,7 @@ const ms: Translations = {
   'side.noTargets': 'Belum ada awan atau pelayan yang disambungkan. Anda boleh menyambungkannya di Lagi, Destinasi.',
   'side.inTarget': 'Folder dalam {name}',
   'side.noSuchTarget': 'Tiada destinasi bernama {name}. Folder pada telefon ini bermula dengan /, contohnya /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Folder pada telefon ini bermula dengan /, contohnya /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

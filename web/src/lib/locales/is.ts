@@ -1224,6 +1224,7 @@ const is: Translations = {
   'side.noTargets': 'Ekkert ský eða netþjónn er tengdur enn. Þú getur tengt einn undir Meira, Áfangastaðir.',
   'side.inTarget': 'Mappa í {name}',
   'side.noSuchTarget': 'Enginn áfangastaður heitir {name}. Möppur í þessum síma byrja á /, til dæmis /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Möppur í þessum síma byrja á /, til dæmis /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

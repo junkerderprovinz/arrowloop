@@ -1224,6 +1224,7 @@ const fi: Translations = {
   'side.noTargets': 'Yhtään pilveä tai palvelinta ei ole vielä yhdistetty. Voit yhdistää sellaisen kohdassa Lisää, Kohteet.',
   'side.inTarget': 'Kansio kohteessa {name}',
   'side.noSuchTarget': 'Kohdetta nimeltä {name} ei ole. Tämän puhelimen kansiot alkavat merkillä /, esimerkiksi /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Tämän puhelimen kansiot alkavat merkillä /, esimerkiksi /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each

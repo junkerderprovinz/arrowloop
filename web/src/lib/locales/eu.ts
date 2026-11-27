@@ -1224,6 +1224,7 @@ const eu: Translations = {
   'side.noTargets': 'Oraindik ez dago hodei edo zerbitzaririk konektatuta. Gehiago, Helburuak atalean konekta dezakezu bat.',
   'side.inTarget': 'Karpeta hemen: {name}',
   'side.noSuchTarget': 'Ez dago {name} izeneko helbururik. Telefono honetako karpetak / ikurrarekin hasten dira, adibidez /storage/emulated/0/DCIM.',
+  'side.notAbsolute': 'Telefono honetako karpetak / ikurrarekin hasten dira, adibidez /storage/emulated/0/DCIM.',
 
   // The second axis of a one-way job: what happens to everything the
   // direction alone does not settle. Two of the three DELETE, so each
