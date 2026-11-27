@@ -1,0 +1,1 @@
+Das Ziel Root sieht jeden App-Ordner, breite Listen scrollen innerhalb ihrer Karte seitwärts, die Zeitauswahl öffnet sich vor der Seite, und die Kopplung hält, während sich eine andere App neu verbindet.
