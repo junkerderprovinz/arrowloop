@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 22497 245.3">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 23841 245.3">
 <svg x="0" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010.28 245.3" width="1010.28" height="245.3" role="img" aria-label="Read the documentation">
   <title>Read the documentation</title>
   <defs>
@@ -36,7 +36,7 @@
     </g>
   </g>
 </svg>
-<svg x="1035" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from Unraid&#x27;s Community Applications">
+<svg x="1083" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from Unraid&#x27;s Community Applications">
   <title>Install from Unraid&#x27;s Community Applications</title>
   <defs>
     <clipPath id="b1-edge">
@@ -72,7 +72,7 @@
     </g>
   </g>
 </svg>
-<svg x="1901" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the MOS Hub">
+<svg x="1997" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the MOS Hub">
   <title>Install from the MOS Hub</title>
   <defs>
     <clipPath id="b2-edge">
@@ -110,7 +110,7 @@
     </g>
   </g>
 </svg>
-<svg x="2767" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the ZimaOS and CasaOS store">
+<svg x="2911" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the ZimaOS and CasaOS store">
   <title>Install from the ZimaOS and CasaOS store</title>
   <defs>
     <clipPath id="b3-edge">
@@ -146,7 +146,7 @@
     </g>
   </g>
 </svg>
-<svg x="3633" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the umbrelOS community app store">
+<svg x="3825" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install from the umbrelOS community app store">
   <title>Install from the umbrelOS community app store</title>
   <defs>
     <clipPath id="b4-edge">
@@ -182,7 +182,7 @@
     </g>
   </g>
 </svg>
-<svg x="4499" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install on TrueNAS with a ready-made YAML file">
+<svg x="4739" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Install on TrueNAS with a ready-made YAML file">
   <title>Install on TrueNAS with a ready-made YAML file</title>
   <defs>
     <clipPath id="b5-edge">
@@ -218,7 +218,7 @@
     </g>
   </g>
 </svg>
-<svg x="5365" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on Proxmox VE">
+<svg x="5653" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on Proxmox VE">
   <title>Run it on Proxmox VE</title>
   <defs>
     <clipPath id="b6-edge">
@@ -254,7 +254,7 @@
     </g>
   </g>
 </svg>
-<svg x="6231" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a Synology NAS">
+<svg x="6567" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a Synology NAS">
   <title>Run it on a Synology NAS</title>
   <defs>
     <clipPath id="b7-edge">
@@ -290,7 +290,7 @@
     </g>
   </g>
 </svg>
-<svg x="7097" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a QNAP NAS">
+<svg x="7481" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a QNAP NAS">
   <title>Run it on a QNAP NAS</title>
   <defs>
     <clipPath id="b8-edge">
@@ -326,7 +326,7 @@
     </g>
   </g>
 </svg>
-<svg x="7963" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a UGREEN NAS">
+<svg x="8395" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Run it on a UGREEN NAS">
   <title>Run it on a UGREEN NAS</title>
   <defs>
     <clipPath id="b9-edge">
@@ -362,7 +362,7 @@
     </g>
   </g>
 </svg>
-<svg x="8829" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the docker-compose file">
+<svg x="9309" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the docker-compose file">
   <title>Download the docker-compose file</title>
   <defs>
     <clipPath id="b10-edge">
@@ -398,7 +398,7 @@
     </g>
   </g>
 </svg>
-<svg x="9695" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the source archive">
+<svg x="10223" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the source archive">
   <title>Download the source archive</title>
   <defs>
     <clipPath id="b11-edge">
@@ -434,7 +434,7 @@
     </g>
   </g>
 </svg>
-<svg x="10561" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for Windows">
+<svg x="11137" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for Windows">
   <title>Download for Windows</title>
   <defs>
     <clipPath id="b12-edge">
@@ -471,7 +471,7 @@
     </g>
   </g>
 </svg>
-<svg x="11427" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download for Windows on ARM">
+<svg x="12051" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download for Windows on ARM">
   <title>Download for Windows on ARM</title>
   <defs>
     <clipPath id="b13-edge">
@@ -506,7 +506,7 @@
     </g>
   </g>
 </svg>
-<svg x="11909" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for macOS on Apple silicon or Intel">
+<svg x="12581" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for macOS on Apple silicon or Intel">
   <title>Download for macOS on Apple silicon or Intel</title>
   <defs>
     <clipPath id="b14-edge">
@@ -543,7 +543,7 @@
     </g>
   </g>
 </svg>
-<svg x="12775" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the macOS app as a zip">
+<svg x="13495" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the macOS app as a zip">
   <title>Download the macOS app as a zip</title>
   <defs>
     <clipPath id="b15-edge">
@@ -578,7 +578,7 @@
     </g>
   </g>
 </svg>
-<svg x="13257" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for Linux">
+<svg x="14025" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download for Linux">
   <title>Download for Linux</title>
   <defs>
     <clipPath id="b16-edge">
@@ -615,7 +615,7 @@
     </g>
   </g>
 </svg>
-<svg x="14123" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download for Linux on ARM">
+<svg x="14939" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download for Linux on ARM">
   <title>Download for Linux on ARM</title>
   <defs>
     <clipPath id="b17-edge">
@@ -650,7 +650,7 @@
     </g>
   </g>
 </svg>
-<svg x="14605" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the AppImage">
+<svg x="15469" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the AppImage">
   <title>Download the AppImage</title>
   <defs>
     <clipPath id="b18-edge">
@@ -687,7 +687,7 @@
     </g>
   </g>
 </svg>
-<svg x="15471" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the AppImage for ARM">
+<svg x="16383" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the AppImage for ARM">
   <title>Download the AppImage for ARM</title>
   <defs>
     <clipPath id="b19-edge">
@@ -722,7 +722,7 @@
     </g>
   </g>
 </svg>
-<svg x="15953" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Flatpak">
+<svg x="16913" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Flatpak">
   <title>Download the Flatpak</title>
   <defs>
     <clipPath id="b20-edge">
@@ -759,7 +759,7 @@
     </g>
   </g>
 </svg>
-<svg x="16819" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the Flatpak for ARM">
+<svg x="17827" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 457.783 245.3" width="457.783" height="245.3" role="img" aria-label="Download the Flatpak for ARM">
   <title>Download the Flatpak for ARM</title>
   <defs>
     <clipPath id="b21-edge">
@@ -794,7 +794,7 @@
     </g>
   </g>
 </svg>
-<svg x="17301" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on Google Play">
+<svg x="18357" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on Google Play">
   <title>Get it on Google Play</title>
   <defs>
     <clipPath id="b22-edge">
@@ -830,7 +830,7 @@
     </g>
   </g>
 </svg>
-<svg x="18167" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on F-Droid">
+<svg x="19271" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Get it on F-Droid">
   <title>Get it on F-Droid</title>
   <defs>
     <clipPath id="b23-edge">
@@ -866,7 +866,7 @@
     </g>
   </g>
 </svg>
-<svg x="19033" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Android app">
+<svg x="20185" y="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 245.3" width="841.9" height="245.3" role="img" aria-label="Download the Android app">
   <title>Download the Android app</title>
   <defs>
     <clipPath id="b24-edge">
@@ -902,7 +902,7 @@
     </g>
   </g>
 </svg>
-<svg x="19899" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="21099" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b25-edge">
@@ -938,7 +938,7 @@
     </g>
   </g>
 </svg>
-<svg x="20765" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="22013" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b26-edge">
@@ -974,7 +974,7 @@
     </g>
   </g>
 </svg>
-<svg x="21631" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg x="22927" y="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1" viewBox="0 0 841.9 245.3" width="841.9" height="245.3">
   <defs>
     <clipPath id="b27-edge">
