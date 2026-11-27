@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -60,6 +61,9 @@ func TestRenamingKeepsTheTargetsID(t *testing.T) {
 	if err := Rename(id, "OneDrive - Business"); err != nil {
 		t.Fatalf("rename: %v", err)
 	}
+	if got := List(); len(got) != 1 || got[0].Name != id {
+		t.Fatalf("after the rename the targets are %+v, want the one with id %q", got, id)
+	}
 	r := listed(t, id)
 	if r.Label != "OneDrive - Business" {
 		t.Errorf("after the rename the target is called %q", r.Label)
@@ -69,6 +73,29 @@ func TestRenamingKeepsTheTargetsID(t *testing.T) {
 	}
 	if len(List()) != 1 {
 		t.Errorf("renaming left %d targets", len(List()))
+	}
+}
+
+func TestANewTargetsIDDoesNotComeFromItsName(t *testing.T) {
+	opaque := regexp.MustCompile(`^[0-9a-f]{12}$`)
+	seen := map[string]bool{}
+	// The same name in two configurations, so an id worked out from the name
+	// would come out the same twice.
+	for range 2 {
+		ownConfig(t)
+		for _, label := range []string{"SFTP", "CERN Particle Accelerator"} {
+			id, err := Add(label, "local", nil)
+			if err != nil {
+				t.Fatalf("add %q: %v", label, err)
+			}
+			if !opaque.MatchString(id) {
+				t.Errorf("%q was given the id %q", label, id)
+			}
+			if seen[id] {
+				t.Errorf("%q was given the id %q a second time", label, id)
+			}
+			seen[id] = true
+		}
 	}
 }
 

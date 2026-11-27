@@ -85,11 +85,16 @@ func Folders(ctx context.Context, name, dir string) ([]string, error) {
 	if err != nil {
 		return nil, checkErr(ctx, err)
 	}
+	out := []string{}
 	entries, err := f.List(ctx, "")
+	// A target that wraps a folder, as crypt does, makes it on the first
+	// write, so a fresh one has no top yet to list.
+	if backend, _ := config.LoadedData().GetValue(name, "type"); dir == "" && isEmptyTarget(backend, err) {
+		return out, nil
+	}
 	if err != nil {
 		return nil, checkErr(ctx, err)
 	}
-	out := []string{}
 	entries.ForDir(func(d rclonefs.Directory) {
 		out = append(out, path.Base(d.Remote()))
 	})

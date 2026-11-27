@@ -234,6 +234,42 @@ secret back to the page. **Change** opens an empty field. The stored value
 stays until you type a new one, and **Keep the saved one** goes back to it.
 Saving without touching it keeps it.
 
+### Targets built on another target
+
+Encrypted, Compressed, Split into pieces, Checksums, Cache, Archive files and
+Alias reach no storage of their own. Each one adds something to a target you
+already have: Encrypted encrypts names and contents, Compressed packs the
+files, Split into pieces cuts large files for a service that limits file size.
+Their form asks for **Target to wrap**, a list of your saved targets by name
+with the ID beside it, and **Folder in it**, where in that target this one
+keeps its files. **A folder on this machine** builds on a local folder
+instead, and then **Folder in it** takes its full path, such as `/mnt/backup`.
+In memory is the odd one out: it keeps files in RAM until the program stops
+and is built on nothing.
+
+Set up the target underneath first, then the one on top. The folder in it does
+not have to exist yet. It is made with the first file a job writes, and until
+then **Choose a folder** shows the new target as empty, so you can pick it
+whole or make a folder in it with **New folder**.
+
+**Merged targets** and **Combined targets** join several targets, one row
+each with **Target to join** and **Folder in it**. **Add a target** adds the
+next row, and one target may appear twice with two folders. Merged targets
+show the contents of all of them as one. Combined targets show each one as a
+folder of its own, named in **Shown as**.
+
+A job uses such a target like any other: pick it in **Choose a folder**. For
+an encrypted copy, point the job at the Encrypted target, not at the folder
+under it, or the files land there unencrypted. Keep the password somewhere
+safe. Without it nobody can read the files again, ArrowLoop included.
+
+Every saved target has an ID, the name rclone knows it by in `rclone.conf` and
+on its command line, and what jobs and wrapping targets write before the colon.
+The form of a saved target shows it as **rclone remote ID**, with a button
+that copies it. A new target gets a random ID, so a rename never leaves it
+with one that names something else. A target made by an older version keeps
+the ID it got from its first name, since jobs and wrapping targets point at it.
+
 ## Drives
 
 A USB disk or a share is added on the **Targets** tile with **Register a

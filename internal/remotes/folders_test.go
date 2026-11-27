@@ -9,6 +9,9 @@ import (
 	"testing"
 
 	_ "github.com/rclone/rclone/backend/alias"
+	_ "github.com/rclone/rclone/backend/archive"
+	_ "github.com/rclone/rclone/backend/compress"
+	_ "github.com/rclone/rclone/backend/crypt"
 )
 
 // aliasTo sets up a target called box that is a plain folder on this machine,
@@ -56,6 +59,40 @@ func TestAnEmptyFolderOnATargetListsAsNothingRatherThanNull(t *testing.T) {
 	}
 	if got == nil || len(got) != 0 {
 		t.Errorf("an empty target lists %#v", got)
+	}
+}
+
+func TestAWrapperOverAFolderNotYetMadeListsAsEmpty(t *testing.T) {
+	for backend, settings := range map[string]map[string]string{
+		"crypt":    {"password": "correct horse"},
+		"compress": {},
+		"archive":  {},
+	} {
+		t.Run(backend, func(t *testing.T) {
+			root := aliasTo(t)
+			settings["remote"] = "box:" + backend
+			if err := Save("wrapped", backend, settings); err != nil {
+				t.Fatalf("save the %s target: %v", backend, err)
+			}
+
+			got, err := Folders(context.Background(), "wrapped", "")
+			if err != nil {
+				t.Fatalf("list the top of a fresh %s target: %v", backend, err)
+			}
+			if len(got) != 0 {
+				t.Errorf("a fresh %s target lists %v", backend, got)
+			}
+			if _, err := os.Stat(filepath.Join(root, backend)); !os.IsNotExist(err) {
+				t.Errorf("listing made the wrapped folder: %v", err)
+			}
+		})
+	}
+}
+
+func TestAMissingFolderInsideATargetIsAnError(t *testing.T) {
+	aliasTo(t)
+	if _, err := Folders(context.Background(), "box", "gone"); err == nil {
+		t.Error("a folder that is not there listed without an error")
 	}
 }
 
