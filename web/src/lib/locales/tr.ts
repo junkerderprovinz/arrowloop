@@ -1992,6 +1992,7 @@ const tr: Translations = {
   'new.change.atStartDue': 'Bir işin {option} ayarı {due} olabilir: iş o zaman başlarken yalnızca program kapalıyken zamanlamadaki vakit geldiyse çalışır, böylece bir başlangıç artık tüm uzun işleri art arda çalıştırmaz.',
   'new.change.wrapPick': '{encrypted} gibi başka bir hedefin üzerine kurulan bir hedef, o hedefi bir listeden adıyla seçer. {union} ve {combine} kendi hedeflerini satır satır ekler.',
   'new.change.targetId': 'Kaydedilmiş bir hedefin formunda {id} ve onu kopyalayan bir düğme görünür.',
+  'new.change.jobPageMore': 'Bir işin sayfasındaki {more}, iş kartıyla aynı eylemleri sunar. {preview} ve {check} doğrudan sayfada başlar.',
   'new.change.systemLog': '{general} kutucuğundaki ve telefonun ayarlarındaki {systemLog} kartı, çalışmaların dışında neyin ters gittiğini gösterir; örneğin rclone\'un hatalarını ve ArrowLoop\'un ulaşamadığı sunucuları.',
   'new.change.historyKeep': '{general} kutucuğundaki {history} kartı çalışmaları istediğin kadar gün ya da sonsuza dek saklar ve her iş son çalışmasını tutar.',
   'new.change.runTransferred': '{history}, bir işin sayfası ve telefondaki çalışma satırları her çalışmanın ne kadar aktardığını gösterir, örneğin 2,2 GB.',

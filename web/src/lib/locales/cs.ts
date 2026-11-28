@@ -1992,6 +1992,7 @@ const cs: Translations = {
   'new.change.atStartDue': 'Nastavení {option} u úlohy může být {due}: úloha pak při spuštění poběží, jen pokud nastal čas podle plánu, zatímco byl program vypnutý. Spuštění tak už nepouští všechny dlouhé úlohy jednu po druhé.',
   'new.change.wrapPick': 'Cíl, který staví na jiném, například {encrypted}, si ho vybírá podle názvu ze seznamu. {union} a {combine} přidávají své cíle po řádcích.',
   'new.change.targetId': 'Formulář uloženého cíle ukazuje jeho {id} a tlačítko, které ho zkopíruje.',
+  'new.change.jobPageMore': '{more} na stránce úlohy nabízí stejné akce jako její karta. {preview} a {check} se spustí přímo na stránce.',
   'new.change.systemLog': 'Karta {systemLog} na dlaždici {general} a v nastavení telefonu ukazuje, co se pokazilo mimo běhy, třeba chyby rclone a servery, na které se ArrowLoop nedostal.',
   'new.change.historyKeep': 'Karta {history} na dlaždici {general} uchovává běhy tolik dní, kolik chceš, nebo navždy, a každá úloha si ponechá svůj poslední běh.',
   'new.change.runTransferred': '{history}, stránka úlohy a řádky běhů v telefonu ukazují, kolik každý běh přenesl, třeba 2,2 GB.',

@@ -1992,6 +1992,7 @@ const es: Translations = {
   'new.change.atStartDue': 'La opción {option} de una tarea puede ser {due}: entonces la tarea solo se ejecuta al iniciar si su programación llegó mientras el programa estaba cerrado, y un inicio ya no ejecuta todas las tareas largas una tras otra.',
   'new.change.wrapPick': 'Un destino montado sobre otro, como {encrypted}, elige ese destino por su nombre en una lista. {union} y {combine} añaden los suyos fila a fila.',
   'new.change.targetId': 'El formulario de un destino guardado muestra su {id}, con un botón que lo copia.',
+  'new.change.jobPageMore': '{more} en la página de una tarea tiene las mismas acciones que su tarjeta. {preview} y {check} empiezan allí mismo, en la página.',
   'new.change.systemLog': 'La tarjeta {systemLog} del mosaico {general} y de los ajustes del teléfono muestra lo que falló fuera de las ejecuciones, como los errores de rclone y los servidores a los que ArrowLoop no pudo llegar.',
   'new.change.historyKeep': 'La tarjeta {history} del mosaico {general} conserva las ejecuciones tantos días como quieras, o para siempre, y cada tarea conserva su última ejecución.',
   'new.change.runTransferred': '{history}, la página de una tarea y las líneas de ejecución del teléfono muestran cuánto transfirió cada ejecución, por ejemplo 2,2 GB.',

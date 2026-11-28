@@ -1992,6 +1992,7 @@ const lv: Translations = {
   'new.change.atStartDue': 'Uzdevuma iestatījums {option} var būt {due}: tad uzdevums startēšanas brīdī izpildās tikai tad, ja grafika laiks pienāca, kamēr programma bija izslēgta, un startēšana vairs neizpilda visus garos uzdevumus vienu pēc otra.',
   'new.change.wrapPick': 'Galamērķis, kas balstās uz citu, piemēram, {encrypted}, izvēlas šo galamērķi pēc nosaukuma no saraksta. {union} un {combine} savējos pievieno pa vienai rindai.',
   'new.change.targetId': 'Saglabāta galamērķa formā redzams tā {id} ar pogu, kas to nokopē.',
+  'new.change.jobPageMore': '{more} uzdevuma lapā piedāvā tās pašas darbības kā tā kartīte. {preview} un {check} sākas turpat lapā.',
   'new.change.systemLog': 'Kartīte {systemLog} flīzē {general} un tālruņa iestatījumos rāda, kas nogāja greizi ārpus palaišanām, piemēram, rclone kļūdas un serverus, kurus ArrowLoop nesasniedza.',
   'new.change.historyKeep': 'Kartīte {history} flīzē {general} glabā palaišanas tik dienu, cik vēlies, vai mūžīgi, un katrs uzdevums patur savu pēdējo palaišanu.',
   'new.change.runTransferred': '{history}, uzdevuma lapa un tālruņa palaišanu rindas rāda, cik daudz katra palaišana pārsūtīja, piemēram, 2,2 GB.',

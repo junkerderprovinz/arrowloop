@@ -119,22 +119,24 @@ export function JobPage({ name }: { name: string }) {
                 />
               </span>
             )}
-            <Menu
-              label={t('list.more')}
-              labelKey="list.more"
-              items={jobMenu(
-                t,
-                {
-                  duplicate: at === -1 ? undefined : () => setEditing({ at: config.duplicate(at), added: true }),
-                  preview: () => ask('preview'),
-                  check: () => ask('check'),
-                  dupes: () => ask('dupes'),
-                  trash: () => goTo({ tab: 'trash', job: name }),
-                  remove: at === -1 ? undefined : () => setRemoving(true),
-                },
-                true,
-              )}
-            />
+            <span data-new="job-page-more" className="flex">
+              <Menu
+                label={t('list.more')}
+                labelKey="list.more"
+                items={jobMenu(
+                  t,
+                  {
+                    duplicate: at === -1 ? undefined : () => setEditing({ at: config.duplicate(at), added: true }),
+                    preview: () => ask('preview'),
+                    check: () => ask('check'),
+                    dupes: () => ask('dupes'),
+                    trash: () => goTo({ tab: 'trash', job: name }),
+                    remove: at === -1 ? undefined : () => setRemoving(true),
+                  },
+                  true,
+                )}
+              />
+            </span>
             {/* What the page is for, so it is its one filled button, the way
                 forward at the end of the row. */}
             <StartStop job={job} />

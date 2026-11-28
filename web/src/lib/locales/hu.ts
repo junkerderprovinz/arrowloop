@@ -1992,6 +1992,7 @@ const hu: Translations = {
   'new.change.atStartDue': 'Egy feladat {option} beállítása lehet {due}: ilyenkor a feladat induláskor csak akkor fut le, ha az ütemezett ideje akkor jött el, amikor a program ki volt kapcsolva, így egy indulás már nem futtatja egymás után az összes hosszú feladatot.',
   'new.change.wrapPick': 'Egy másik célra épülő cél, például {encrypted}, egy listából, név szerint választja ki, mire épül. Az {union} és a {combine} soronként adja hozzá a saját céljait.',
   'new.change.targetId': 'Egy mentett cél űrlapján ott van az {id} is, mellette egy gomb, amely kimásolja.',
+  'new.change.jobPageMore': 'A feladat oldalán a {more} ugyanazokat a műveleteket kínálja, mint a feladatkártya. {preview} és {check} ott helyben indul.',
   'new.change.systemLog': 'Az {general} csempén és a telefon beállításaiban lévő {systemLog} kártya megmutatja, mi romlott el a futásokon kívül, például az rclone hibáit és a szervereket, amelyeket az ArrowLoop nem ért el.',
   'new.change.historyKeep': 'Az {general} csempén lévő {history} kártya annyi napig őrzi meg a futásokat, ameddig szeretnéd, vagy örökre, és minden feladat megtartja az utolsó futását.',
   'new.change.runTransferred': 'Az {history}, a feladat oldala és a telefon futássorai megmutatják, mennyit vitt át egy-egy futás, például 2,2 GB-ot.',

@@ -1992,6 +1992,7 @@ const it: Translations = {
   'new.change.atStartDue': 'L\'impostazione {option} di un lavoro può essere {due}: il lavoro viene allora eseguito all\'avvio solo se la sua pianificazione è arrivata mentre il programma era chiuso, e un avvio non esegue più tutti i lavori lunghi uno dopo l\'altro.',
   'new.change.wrapPick': 'Una destinazione basata su un\'altra, come {encrypted}, sceglie quella destinazione per nome da un elenco. {union} e {combine} aggiungono le loro una riga alla volta.',
   'new.change.targetId': 'Il modulo di una destinazione salvata mostra il suo {id}, con un pulsante che lo copia.',
+  'new.change.jobPageMore': '{more} nella pagina di un lavoro offre le stesse azioni della sua scheda. {preview} e {check} partono direttamente nella pagina.',
   'new.change.systemLog': 'La scheda {systemLog} nel riquadro {general} e nelle impostazioni del telefono mostra cosa è andato storto al di fuori delle esecuzioni, come gli errori di rclone e i server che ArrowLoop non ha raggiunto.',
   'new.change.historyKeep': 'La scheda {history} nel riquadro {general} conserva le esecuzioni per quanti giorni vuoi, o per sempre, e ogni lavoro tiene la sua ultima esecuzione.',
   'new.change.runTransferred': '{history}, la pagina di un lavoro e le righe delle esecuzioni sul telefono mostrano quanto ha trasferito ogni esecuzione, per esempio 2,2 GB.',

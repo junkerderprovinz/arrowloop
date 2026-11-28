@@ -1992,6 +1992,7 @@ const vi: Translations = {
   'new.change.atStartDue': 'Cài đặt {option} của một công việc có thể là {due}: khi đó công việc chỉ chạy lúc khởi động nếu đã đến giờ theo lịch trong lúc chương trình tắt, nên khởi động không còn chạy lần lượt mọi công việc dài nữa.',
   'new.change.wrapPick': 'Đích dựa trên một đích khác, như {encrypted}, chọn đích đó theo tên từ một danh sách. {union} và {combine} thêm các đích của chúng từng dòng một.',
   'new.change.targetId': 'Biểu mẫu của một đích đã lưu hiện {id} của nó, kèm một nút để chép.',
+  'new.change.jobPageMore': '{more} trên trang của một công việc có cùng các thao tác như thẻ của nó. {preview} và {check} chạy ngay trên trang.',
   'new.change.systemLog': 'Thẻ {systemLog} trong ô {general} và trong cài đặt của điện thoại cho thấy những gì trục trặc bên ngoài các lần chạy, như lỗi của rclone và máy chủ mà ArrowLoop không tới được.',
   'new.change.historyKeep': 'Thẻ {history} trong ô {general} giữ các lần chạy bao nhiêu ngày tùy bạn, hoặc mãi mãi, và mỗi công việc luôn giữ lần chạy gần nhất của nó.',
   'new.change.runTransferred': '{history}, trang của công việc và các dòng lần chạy trên điện thoại cho biết mỗi lần chạy đã truyền bao nhiêu, chẳng hạn 2,2 GB.',

@@ -1992,6 +1992,7 @@ const ja: Translations = {
   'new.change.atStartDue': 'ジョブの{option}を{due}にできます。その場合、プログラムが止まっている間にスケジュールの時刻が過ぎたときだけ起動時にジョブを実行するので、起動のたびに長いジョブがすべて順番に走ることはなくなります。',
   'new.change.wrapPick': '{encrypted}のように別の接続先を土台にする接続先は、その接続先をリストから名前で選びます。{union}と{combine}では、使う接続先を 1 行ずつ追加します。',
   'new.change.targetId': '保存した接続先のフォームに{id}が表示され、ボタンでコピーできます。',
+  'new.change.jobPageMore': 'ジョブのページの {more} には、ジョブカードと同じ操作があります。{preview} と {check} はそのページですぐに始まります。',
   'new.change.systemLog': '{general}タイルとスマートフォンの設定にある{systemLog}カードには、実行の外で起きた問題が並びます。rcloneのエラーや、ArrowLoopが届かなかったサーバーなどです。',
   'new.change.historyKeep': '{general}タイルの{history}カードでは、実行を好きな日数だけ、またはずっと残せます。どのジョブも最後の実行は残ります。',
   'new.change.runTransferred': '{history}、ジョブのページ、スマートフォンの実行の行に、各実行の転送量が 2.2 GB のように表示されます。',

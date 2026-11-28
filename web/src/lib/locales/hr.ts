@@ -1992,6 +1992,7 @@ const hr: Translations = {
   'new.change.atStartDue': 'Postavka {option} zadatka može biti {due}: tada se zadatak pri pokretanju pokreće samo ako je vrijeme po rasporedu došlo dok je program bio isključen, pa pokretanje više ne pokreće sve duge zadatke jedan za drugim.',
   'new.change.wrapPick': 'Odredište koje se temelji na drugom, na primjer {encrypted}, bira to odredište po nazivu s popisa. {union} i {combine} dodaju svoja redak po redak.',
   'new.change.targetId': 'Obrazac spremljenog odredišta prikazuje njegov {id} s gumbom koji ga kopira.',
+  'new.change.jobPageMore': '{more} na stranici zadatka nudi iste radnje kao njegova kartica. {preview} i {check} pokreću se odmah na stranici.',
   'new.change.systemLog': 'Kartica {systemLog} na pločici {general} i u postavkama telefona pokazuje što je pošlo po zlu izvan izvođenja, primjerice pogreške rclonea i poslužitelje do kojih ArrowLoop nije došao.',
   'new.change.historyKeep': 'Kartica {history} na pločici {general} čuva izvođenja onoliko dana koliko želiš ili zauvijek, a svaki zadatak zadržava svoje zadnje izvođenje.',
   'new.change.runTransferred': '{history}, stranica zadatka i retci izvođenja na mobitelu pokazuju koliko je svako izvođenje prenijelo, primjerice 2,2 GB.',

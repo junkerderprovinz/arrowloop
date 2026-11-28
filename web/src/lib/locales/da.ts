@@ -1992,6 +1992,7 @@ const da: Translations = {
   'new.change.atStartDue': 'Et jobs indstilling {option} kan være {due}: Så kører jobbet kun ved start, hvis tidsplanen blev nået, mens programmet var slukket, og en start kører ikke længere alle lange job efter hinanden.',
   'new.change.wrapPick': 'Et mål, der bygger på et andet, fx {encrypted}, vælger det mål ved navn fra en liste. {union} og {combine} tilføjer deres én række ad gangen.',
   'new.change.targetId': 'Formularen for et gemt mål viser dets {id} med en knap, der kopierer det.',
+  'new.change.jobPageMore': '{more} på et jobs side har de samme handlinger som jobkortet. {preview} og {check} starter lige der på siden.',
   'new.change.systemLog': 'Kortet {systemLog} på flisen {general} og i telefonens indstillinger viser, hvad der gik galt uden for kørslerne, for eksempel fejl fra rclone og servere, som ArrowLoop ikke kunne nå.',
   'new.change.historyKeep': 'Kortet {history} på flisen {general} beholder kørsler i så mange dage, du vil, eller for altid, og hvert job beholder sin seneste kørsel.',
   'new.change.runTransferred': '{history}, et jobs side og kørselslinjerne på telefonen viser, hvor meget hver kørsel overførte, fx 2,2 GB.',

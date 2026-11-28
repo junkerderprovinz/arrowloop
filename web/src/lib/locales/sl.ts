@@ -1992,6 +1992,7 @@ const sl: Translations = {
   'new.change.atStartDue': 'Nastavitev {option} opravila je lahko {due}: opravilo se ob zagonu izvede le, če je čas po urniku prišel, medtem ko je bil program izklopljen, zato zagon ne izvaja več vseh dolgih opravil enega za drugim.',
   'new.change.wrapPick': 'Cilj, ki temelji na drugem, na primer {encrypted}, ta cilj izbere po imenu s seznama. {union} in {combine} svoje cilje dodajata vrstico za vrstico.',
   'new.change.targetId': 'Obrazec shranjenega cilja prikaže njegov {id} z gumbom, ki ga kopira.',
+  'new.change.jobPageMore': '{more} na strani opravila ponuja enaka dejanja kot njegova kartica. {preview} in {check} se zaženeta kar na strani.',
   'new.change.systemLog': 'Kartica {systemLog} na ploščici {general} in v nastavitvah telefona pokaže, kaj je šlo narobe zunaj zagonov, na primer napake rclone in strežnike, ki jih ArrowLoop ni dosegel.',
   'new.change.historyKeep': 'Kartica {history} na ploščici {general} hrani zagone toliko dni, kot želiš, ali za vedno, vsako opravilo pa obdrži svoj zadnji zagon.',
   'new.change.runTransferred': '{history}, stran opravila in vrstice zagonov na telefonu pokažejo, koliko je prenesel vsak zagon, na primer 2,2 GB.',

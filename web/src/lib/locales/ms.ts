@@ -1992,6 +1992,7 @@ const ms: Translations = {
   'new.change.atStartDue': 'Tetapan {option} sesuatu tugas boleh ditetapkan kepada {due}: tugas itu kemudian berjalan semasa program bermula hanya jika masa dalam jadualnya tiba ketika program dimatikan, jadi permulaan tidak lagi menjalankan semua tugas panjang satu demi satu.',
   'new.change.wrapPick': 'Destinasi yang dibina di atas destinasi lain, seperti {encrypted}, memilih destinasi itu mengikut nama daripada senarai. {union} dan {combine} menambah destinasi masing-masing satu baris pada satu masa.',
   'new.change.targetId': 'Borang destinasi yang disimpan memaparkan {id} destinasi itu, dengan butang yang menyalinnya.',
+  'new.change.jobPageMore': '{more} pada halaman tugas ada tindakan yang sama seperti kadnya. {preview} dan {check} bermula terus di halaman itu.',
   'new.change.systemLog': 'Kad {systemLog} pada jubin {general} dan dalam tetapan telefon menunjukkan apa yang tidak kena di luar larian, seperti ralat rclone dan pelayan yang tidak dapat dicapai ArrowLoop.',
   'new.change.historyKeep': 'Kad {history} pada jubin {general} menyimpan larian selama berapa hari yang anda mahu, atau selama-lamanya, dan setiap tugas menyimpan larian terakhirnya.',
   'new.change.runTransferred': '{history}, halaman tugas dan baris larian pada telefon menunjukkan berapa banyak yang dipindahkan oleh setiap larian, contohnya 2.2 GB.',

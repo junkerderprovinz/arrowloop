@@ -1992,6 +1992,7 @@ const pl: Translations = {
   'new.change.atStartDue': 'Ustawienie {option} zadania może mieć wartość {due}: wtedy zadanie uruchamia się przy starcie tylko wtedy, gdy termin z harmonogramu przypadł, kiedy program był wyłączony, więc start nie uruchamia już wszystkich długich zadań jedno po drugim.',
   'new.change.wrapPick': 'Cel oparty na innym, na przykład {encrypted}, wybiera ten cel po nazwie z listy. {union} i {combine} dodają swoje cele wiersz po wierszu.',
   'new.change.targetId': 'Formularz zapisanego celu pokazuje jego {id} z przyciskiem, który je kopiuje.',
+  'new.change.jobPageMore': '{more} na stronie zadania ma te same działania co jego karta. {preview} i {check} ruszają od razu na stronie.',
   'new.change.systemLog': 'Karta {systemLog} na kafelku {general} i w ustawieniach telefonu pokazuje, co poszło nie tak poza przebiegami, na przykład błędy rclone i serwery, do których ArrowLoop nie dotarł.',
   'new.change.historyKeep': 'Karta {history} na kafelku {general} zachowuje przebiegi przez tyle dni, ile chcesz, albo na zawsze, a każde zadanie zachowuje swój ostatni przebieg.',
   'new.change.runTransferred': '{history}, strona zadania i wiersze przebiegów na telefonie pokazują, ile przesłał każdy przebieg, na przykład 2,2 GB.',

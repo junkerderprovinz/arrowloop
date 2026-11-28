@@ -1992,6 +1992,7 @@ const fr: Translations = {
   'new.change.atStartDue': 'Le réglage {option} d\'une tâche peut valoir {due} : la tâche ne s\'exécute alors au démarrage que si sa planification est arrivée pendant que le programme était fermé, et un démarrage ne lance plus toutes les longues tâches l\'une après l\'autre.',
   'new.change.wrapPick': 'Une cible construite sur une autre, comme {encrypted}, choisit cette cible par son nom dans une liste. {union} et {combine} ajoutent les leurs ligne par ligne.',
   'new.change.targetId': 'Le formulaire d\'une cible enregistrée affiche son {id}, avec un bouton qui le copie.',
+  'new.change.jobPageMore': '{more} sur la page d\'une tâche propose les mêmes actions que sa carte. {preview} et {check} démarrent directement sur la page.',
   'new.change.systemLog': 'La carte {systemLog} de la tuile {general} et des réglages du téléphone montre ce qui a échoué en dehors des exécutions, comme les erreurs de rclone et les serveurs qu\'ArrowLoop n\'a pas pu joindre.',
   'new.change.historyKeep': 'La carte {history} de la tuile {general} conserve les exécutions autant de jours que vous voulez, ou pour toujours, et chaque tâche garde sa dernière exécution.',
   'new.change.runTransferred': '{history}, la page d\'une tâche et les lignes d\'exécution du téléphone indiquent combien chaque exécution a transféré, par exemple 2,2 GB.',

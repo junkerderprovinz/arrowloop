@@ -1992,6 +1992,7 @@ const gl: Translations = {
   'new.change.atStartDue': 'A opción {option} dunha tarefa pode ser {due}: entón a tarefa só se executa ao arrincar se a súa planificación chegou mentres o programa estaba pechado, e un arranque xa non executa todas as tarefas longas unha tras outra.',
   'new.change.wrapPick': 'Un destino que se apoia noutro, como {encrypted}, escolle ese destino polo seu nome nunha lista. {union} e {combine} engaden os seus fila a fila.',
   'new.change.targetId': 'O formulario dun destino gardado mostra o seu {id}, cun botón que o copia.',
+  'new.change.jobPageMore': '{more} na páxina dunha tarefa ten as mesmas accións que a súa tarxeta. {preview} e {check} comezan alí mesmo, na páxina.',
   'new.change.systemLog': 'A tarxeta {systemLog} do mosaico {general} e da configuración do teléfono mostra o que fallou fóra das execucións, como os erros de rclone e os servidores aos que ArrowLoop non puido chegar.',
   'new.change.historyKeep': 'A tarxeta {history} do mosaico {general} conserva as execucións os días que queiras, ou para sempre, e cada tarefa conserva a súa última execución.',
   'new.change.runTransferred': '{history}, a páxina dunha tarefa e as liñas de execución do móbil mostran canto transferiu cada execución, por exemplo 2,2 GB.',

@@ -1992,6 +1992,7 @@ const et: Translations = {
   'new.change.atStartDue': 'Töö seade {option} võib olla {due}: siis käivitub töö programmi käivitumisel ainult siis, kui ajakava järgi tuli aeg ajal, mil programm oli väljas, ja käivitus ei käivita enam kõiki pikki töid üksteise järel.',
   'new.change.wrapPick': 'Teisele tuginev sihtkoht, näiteks {encrypted}, valib oma aluse nime järgi loendist. {union} ja {combine} lisavad enda omad rida haaval.',
   'new.change.targetId': 'Salvestatud sihtkoha vormil on näha selle {id} ja nupp, mis selle kopeerib.',
+  'new.change.jobPageMore': 'Töö lehel on {more} samade tegevustega mis töökaardil. {preview} ja {check} käivituvad otse lehel.',
   'new.change.systemLog': 'Paani {general} ja telefoni seadete kaart {systemLog} näitab, mis läks käivitustest väljaspool valesti, näiteks rclone’i vead ja serverid, milleni ArrowLoop ei jõudnud.',
   'new.change.historyKeep': 'Paani {general} kaart {history} hoiab käivitusi alles nii mitu päeva, kui soovid, või igavesti, ja iga töö jätab alles oma viimase käivituse.',
   'new.change.runTransferred': '{history}, töö leht ja telefoni käivituste read näitavad, kui palju iga käivitus üle kandis, näiteks 2,2 GB.',

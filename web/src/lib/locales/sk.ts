@@ -1992,6 +1992,7 @@ const sk: Translations = {
   'new.change.atStartDue': 'Nastavenie {option} úlohy môže byť {due}: úloha potom pri spustení pobeží, len ak nastal čas podľa plánu, kým bol program vypnutý. Spustenie tak už nespúšťa všetky dlhé úlohy jednu po druhej.',
   'new.change.wrapPick': 'Cieľ, ktorý stavia na inom, napríklad {encrypted}, si ten cieľ vyberá podľa názvu zo zoznamu. {union} a {combine} pridávajú svoje ciele po jednom riadku.',
   'new.change.targetId': 'Formulár uloženého cieľa ukazuje jeho {id} s tlačidlom, ktoré ho skopíruje.',
+  'new.change.jobPageMore': '{more} na stránke úlohy ponúka rovnaké akcie ako jej karta. {preview} a {check} sa spustia priamo na stránke.',
   'new.change.systemLog': 'Karta {systemLog} na dlaždici {general} a v nastaveniach telefónu ukazuje, čo sa pokazilo mimo behov, napríklad chyby rclone a servery, ku ktorým sa ArrowLoop nedostal.',
   'new.change.historyKeep': 'Karta {history} na dlaždici {general} uchováva behy toľko dní, koľko chceš, alebo navždy, a každá úloha si nechá svoj posledný beh.',
   'new.change.runTransferred': '{history}, stránka úlohy a riadky behov na telefóne ukazujú, koľko každý beh preniesol, napríklad 2,2 GB.',

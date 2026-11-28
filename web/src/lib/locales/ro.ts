@@ -1992,6 +1992,7 @@ const ro: Translations = {
   'new.change.atStartDue': 'Setarea {option} a unei sarcini poate fi {due}: atunci sarcina rulează la pornire doar dacă ora din programare a venit cât timp programul a fost oprit, iar o pornire nu mai rulează toate sarcinile lungi una după alta.',
   'new.change.wrapPick': 'O destinație construită pe alta, cum e {encrypted}, alege acea destinație după nume dintr-o listă. {union} și {combine} își adaugă destinațiile rând cu rând.',
   'new.change.targetId': 'Formularul unei destinații salvate îi arată {id}, cu un buton care îl copiază.',
+  'new.change.jobPageMore': '{more} de pe pagina unei sarcini are aceleași acțiuni ca și cardul ei. {preview} și {check} pornesc direct pe pagină.',
   'new.change.systemLog': 'Cardul {systemLog} de pe dala {general} și din setările telefonului arată ce n-a mers în afara rulărilor, de pildă erorile rclone și serverele la care ArrowLoop n-a ajuns.',
   'new.change.historyKeep': 'Cardul {history} de pe dala {general} păstrează rulările atâtea zile câte vrei, sau pentru totdeauna, iar fiecare sarcină își păstrează ultima rulare.',
   'new.change.runTransferred': '{history}, pagina unei sarcini și rândurile de rulare de pe telefon arată cât a transferat fiecare rulare, de exemplu 2,2 GB.',

@@ -1992,6 +1992,7 @@ const sv: Translations = {
   'new.change.atStartDue': 'Ett jobbs inställning {option} kan vara {due}: då körs jobbet vid start bara om schemat kom fram medan programmet var avstängt, så en start kör inte längre alla långa jobb efter varandra.',
   'new.change.wrapPick': 'Ett mål som bygger på ett annat, till exempel {encrypted}, väljer det målet efter namn i en lista. {union} och {combine} lägger till sina mål en rad i taget.',
   'new.change.targetId': 'Formuläret för ett sparat mål visar dess {id}, med en knapp som kopierar det.',
+  'new.change.jobPageMore': '{more} på ett jobbs sida har samma åtgärder som jobbkortet. {preview} och {check} startar direkt på sidan.',
   'new.change.systemLog': 'Kortet {systemLog} i rutan {general} och i telefonens inställningar visar vad som gick fel utanför körningarna, till exempel fel från rclone och servrar som ArrowLoop inte nådde.',
   'new.change.historyKeep': 'Kortet {history} i rutan {general} behåller körningar så många dagar du vill, eller för alltid, och varje jobb behåller sin senaste körning.',
   'new.change.runTransferred': '{history}, ett jobbs sida och telefonens körningsrader visar hur mycket varje körning överförde, till exempel 2,2 GB.',

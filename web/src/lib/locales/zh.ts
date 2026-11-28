@@ -1992,6 +1992,7 @@ const zh: Translations = {
   'new.change.atStartDue': '任务的{option}可以设为{due}：这样只有在程序关闭期间计划时间已到，任务才会在启动时运行，启动时不再把所有长任务一个接一个地跑一遍。',
   'new.change.wrapPick': '像{encrypted}这样基于另一个目标的目标，从列表中按名称选择所依据的目标。{union}和{combine}逐行添加各自的目标。',
   'new.change.targetId': '已保存目标的表单会显示它的{id}，旁边有一个复制按钮。',
+  'new.change.jobPageMore': '任务页面上的 {more} 提供与任务卡片相同的操作。{preview} 和 {check} 直接在页面上启动。',
   'new.change.systemLog': '{general}磁贴和手机设置里的{systemLog}卡片会列出运行之外出的问题，比如 rclone 的错误和 ArrowLoop 无法连接的服务器。',
   'new.change.historyKeep': '{general}磁贴上的{history}卡片可以按你想要的天数保留运行记录，也可以永久保留，而每个任务都会保留它的最后一次运行。',
   'new.change.runTransferred': '{history}、任务页面和手机上的运行条目都会显示每次运行传输了多少数据，例如 2.2 GB。',

@@ -1992,6 +1992,7 @@ const is: Translations = {
   'new.change.atStartDue': 'Stillingin {option} á verki getur verið {due}: þá keyrir verkið við ræsingu aðeins ef tími samkvæmt áætlun kom á meðan slökkt var á forritinu, og ræsing keyrir ekki lengur öll löng verk hvert á eftir öðru.',
   'new.change.wrapPick': 'Áfangastaður sem byggir á öðrum, til dæmis {encrypted}, velur þann áfangastað eftir heiti af lista. {union} og {combine} bæta sínum við línu fyrir línu.',
   'new.change.targetId': 'Eyðublað vistaðs áfangastaðar sýnir {id}, með hnappi sem afritar það.',
+  'new.change.jobPageMore': '{more} á síðu verks býður sömu aðgerðir og verkspjaldið. {preview} og {check} fara af stað beint á síðunni.',
   'new.change.systemLog': 'Spjaldið {systemLog} á reitnum {general} og í stillingum símans sýnir hvað fór úrskeiðis utan keyrslnanna, til dæmis villur frá rclone og þjóna sem ArrowLoop náði ekki til.',
   'new.change.historyKeep': 'Spjaldið {history} á reitnum {general} geymir keyrslur eins marga daga og þú vilt, eða að eilífu, og hvert verk heldur síðustu keyrslu sinni.',
   'new.change.runTransferred': '{history}, síða verks og keyrslulínurnar í símanum sýna hve mikið hver keyrsla flutti, til dæmis 2,2 GB.',

@@ -1992,6 +1992,7 @@ const id: Translations = {
   'new.change.atStartDue': 'Pengaturan {option} sebuah tugas bisa diisi {due}: tugas lalu berjalan saat program dimulai hanya jika jadwalnya tiba ketika program mati, jadi saat dimulai program tidak lagi menjalankan semua tugas panjang satu per satu.',
   'new.change.wrapPick': 'Tujuan yang dibangun di atas tujuan lain, seperti {encrypted}, memilih tujuan itu berdasarkan namanya dari daftar. {union} dan {combine} menambahkan tujuannya baris demi baris.',
   'new.change.targetId': 'Formulir tujuan yang tersimpan menampilkan {id}, lengkap dengan tombol untuk menyalinnya.',
+  'new.change.jobPageMore': '{more} di halaman tugas punya tindakan yang sama dengan kartunya. {preview} dan {check} langsung berjalan di halaman itu.',
   'new.change.systemLog': 'Kartu {systemLog} di petak {general} dan di pengaturan ponsel menampilkan apa yang salah di luar proses, seperti galat rclone dan server yang tidak dapat dijangkau ArrowLoop.',
   'new.change.historyKeep': 'Kartu {history} di petak {general} menyimpan proses selama berapa hari pun yang kamu mau, atau selamanya, dan setiap tugas menyimpan proses terakhirnya.',
   'new.change.runTransferred': '{history}, halaman tugas, dan baris proses di ponsel menunjukkan berapa banyak yang ditransfer setiap proses, misalnya 2,2 GB.',

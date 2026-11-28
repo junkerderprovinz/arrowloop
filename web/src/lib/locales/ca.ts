@@ -1992,6 +1992,7 @@ const ca: Translations = {
   'new.change.atStartDue': 'L\'opció {option} d\'una tasca pot ser {due}: aleshores la tasca només s\'executa en iniciar si la planificació ha arribat mentre el programa estava tancat, i un inici ja no executa totes les tasques llargues l\'una darrere l\'altra.',
   'new.change.wrapPick': 'Una destinació construïda sobre una altra, com {encrypted}, tria aquesta destinació pel seu nom en una llista. {union} i {combine} afegeixen les seves fila a fila.',
   'new.change.targetId': 'El formulari d\'una destinació desada mostra el seu {id}, amb un botó que el copia.',
+  'new.change.jobPageMore': '{more} a la pàgina d\'una tasca té les mateixes accions que la seva targeta. {preview} i {check} comencen allà mateix, a la pàgina.',
   'new.change.systemLog': 'La targeta {systemLog} de la rajola {general} i de la configuració del telèfon mostra què ha fallat fora de les execucions, com ara els errors de rclone i els servidors que ArrowLoop no ha pogut assolir.',
   'new.change.historyKeep': 'La targeta {history} de la rajola {general} conserva les execucions tants dies com vulguis, o per sempre, i cada tasca conserva la seva última execució.',
   'new.change.runTransferred': '{history}, la pàgina d\'una tasca i les línies d\'execució del telèfon mostren quant ha transferit cada execució, per exemple 2,2 GB.',

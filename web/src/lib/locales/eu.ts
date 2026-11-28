@@ -1992,6 +1992,7 @@ const eu: Translations = {
   'new.change.atStartDue': 'Lan baten {option} ezarpena {due} izan daiteke: orduan lana abiatzean bakarrik exekutatzen da programa itzalita zegoen bitartean ordutegiko unea iritsi bada, eta abiatze batek ez ditu jada lan luze guztiak bata bestearen atzetik exekutatzen.',
   'new.change.wrapPick': 'Beste baten gainean eraikitako helburu batek, adibidez {encrypted}, helburu hori izenez aukeratzen du zerrenda batetik. {union} eta {combine} beren helburuak errenkadaz errenkada gehitzen dituzte.',
   'new.change.targetId': 'Gordetako helburu baten inprimakiak bere {id} erakusten du, kopiatzeko botoi batekin.',
+  'new.change.jobPageMore': 'Lanaren orrian, {more} aukerak lan-txartelaren ekintza berak ditu. {preview} eta {check} orrian bertan abiarazten dira.',
   'new.change.systemLog': '{general} lauzako eta telefonoaren ezarpenetako {systemLog} txartelak exekuzioetatik kanpo gaizki joan dena erakusten du, adibidez rcloneren erroreak eta ArrowLoopek iritsi ezin izan dituen zerbitzariak.',
   'new.change.historyKeep': '{general} lauzako {history} txartelak exekuzioak nahi adina egunez gordetzen ditu, edo betiko, eta lan bakoitzak bere azken exekuzioa gordetzen du.',
   'new.change.runTransferred': '{history} atalak, lan baten orriak eta telefonoko exekuzio-lerroek exekuzio bakoitzak zenbat transferitu duen erakusten dute, adibidez 2,2 GB.',

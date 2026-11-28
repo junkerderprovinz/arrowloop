@@ -1992,6 +1992,7 @@ const nl: Translations = {
   'new.change.atStartDue': 'De instelling {option} van een taak kan {due} zijn: de taak draait dan bij het starten alleen als zijn planning aan de beurt was terwijl het programma uit stond, zodat een start niet meer alle lange taken na elkaar draait.',
   'new.change.wrapPick': 'Een doel dat op een ander doel voortbouwt, zoals {encrypted}, kiest dat doel bij naam uit een lijst. {union} en {combine} voegen hun doelen regel voor regel toe.',
   'new.change.targetId': 'Het formulier van een opgeslagen doel toont de {id}, met een knop om die te kopiëren.',
+  'new.change.jobPageMore': '{more} op de pagina van een taak heeft dezelfde acties als de taakkaart. {preview} en {check} starten meteen op de pagina.',
   'new.change.systemLog': 'De kaart {systemLog} op de tegel {general} en in de instellingen van de telefoon toont wat er buiten de runs misging, zoals fouten van rclone en servers die ArrowLoop niet bereikte.',
   'new.change.historyKeep': 'De kaart {history} op de tegel {general} bewaart runs zoveel dagen als je wilt, of voor altijd, en elke taak houdt zijn laatste run.',
   'new.change.runTransferred': '{history}, de pagina van een taak en de runregels op de telefoon laten zien hoeveel elke run heeft overgezet, bijvoorbeeld 2,2 GB.',

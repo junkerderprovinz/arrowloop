@@ -1992,6 +1992,7 @@ const ko: Translations = {
   'new.change.atStartDue': '작업의 {option} 설정을 {due}(으)로 할 수 있습니다. 그러면 프로그램이 꺼져 있는 동안 일정 시간이 지났을 때만 시작할 때 작업을 실행하므로, 시작할 때 긴 작업이 모두 차례로 실행되지 않습니다.',
   'new.change.wrapPick': '{encrypted}처럼 다른 대상을 바탕으로 하는 대상은 그 대상을 목록에서 이름으로 고릅니다. {union}과 {combine}은 대상을 한 줄씩 추가합니다.',
   'new.change.targetId': '저장된 대상의 양식에 {id}가 표시되고, 버튼으로 복사할 수 있습니다.',
+  'new.change.jobPageMore': '작업 페이지의 {more} 메뉴에는 작업 카드와 같은 작업이 있습니다. {preview}, {check} 모두 페이지에서 바로 시작됩니다.',
   'new.change.systemLog': '{general} 타일과 휴대폰 설정의 {systemLog} 카드에는 실행 밖에서 잘못된 일이 나옵니다. rclone 오류나 ArrowLoop가 닿지 못한 서버 같은 것입니다.',
   'new.change.historyKeep': '{general} 타일의 {history} 카드에서는 실행을 원하는 날수만큼 또는 계속 보관하며, 모든 작업은 마지막 실행을 남겨 둡니다.',
   'new.change.runTransferred': '{history}, 작업 페이지, 휴대폰의 실행 줄에 각 실행의 전송량이 2.2 GB처럼 표시됩니다.',

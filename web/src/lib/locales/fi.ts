@@ -1992,6 +1992,7 @@ const fi: Translations = {
   'new.change.atStartDue': 'Työn asetus {option} voi olla {due}: silloin työ ajetaan käynnistyksessä vain, jos sen aikataulun mukainen aika tuli ohjelman ollessa kiinni, eikä käynnistys enää aja kaikkia pitkiä töitä peräkkäin.',
   'new.change.wrapPick': 'Toisen päälle rakentuva kohde, kuten {encrypted}, valitsee pohjansa nimeltä listasta. {union} ja {combine} lisäävät omansa rivi kerrallaan.',
   'new.change.targetId': 'Tallennetun kohteen lomakkeessa näkyy {id} ja painike, joka kopioi sen.',
+  'new.change.jobPageMore': 'Työn sivun {more} sisältää samat toiminnot kuin työkortti. {preview} ja {check} käynnistyvät suoraan sivulla.',
   'new.change.systemLog': 'Ruudun {general} ja puhelimen asetusten kortti {systemLog} näyttää, mikä meni pieleen ajojen ulkopuolella, kuten rclonen virheet ja palvelimet, joita ArrowLoop ei tavoittanut.',
   'new.change.historyKeep': 'Ruudun {general} kortti {history} säilyttää ajot niin monta päivää kuin haluat tai ikuisesti, ja jokainen työ pitää viimeisimmän ajonsa.',
   'new.change.runTransferred': '{history}, työn sivu ja puhelimen ajorivit näyttävät, paljonko kukin ajo siirsi, esimerkiksi 2,2 GB.',

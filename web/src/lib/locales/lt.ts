@@ -1992,6 +1992,7 @@ const lt: Translations = {
   'new.change.atStartDue': 'Užduoties nustatymas {option} gali būti {due}: tada užduotis paleidus programą vykdoma tik tada, jei tvarkaraščio laikas atėjo, kol programa buvo išjungta, ir paleidimas nebevykdo visų ilgų užduočių vienos po kitos.',
   'new.change.wrapPick': 'Paskirtis, kuri remiasi kita, pavyzdžiui, {encrypted}, pasirenka tą paskirtį pagal pavadinimą iš sąrašo. {union} ir {combine} savąsias prideda po vieną eilutę.',
   'new.change.targetId': 'Išsaugotos paskirties formoje rodomas jos {id} su mygtuku, kuris jį nukopijuoja.',
+  'new.change.jobPageMore': '{more} užduoties puslapyje siūlo tuos pačius veiksmus kaip jos kortelė. {preview} ir {check} pasileidžia tiesiai puslapyje.',
   'new.change.systemLog': 'Kortelė {systemLog} plytelėje {general} ir telefono nustatymuose rodo, kas nepavyko ne paleidimuose, pavyzdžiui, rclone klaidas ir serverius, kurių ArrowLoop nepasiekė.',
   'new.change.historyKeep': 'Kortelė {history} plytelėje {general} saugo paleidimus tiek dienų, kiek nori, arba visam laikui, o kiekviena užduotis pasilieka savo paskutinį paleidimą.',
   'new.change.runTransferred': '{history}, užduoties puslapis ir telefono paleidimų eilutės rodo, kiek perdavė kiekvienas paleidimas, pavyzdžiui, 2,2 GB.',

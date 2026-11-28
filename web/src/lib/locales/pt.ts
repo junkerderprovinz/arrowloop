@@ -1992,6 +1992,7 @@ const pt: Translations = {
   'new.change.atStartDue': 'A opção {option} de uma tarefa pode ser {due}: a tarefa só é então executada ao iniciar se o agendamento chegou enquanto o programa estava fechado, e um arranque já não executa todas as tarefas longas uma após outra.',
   'new.change.wrapPick': 'Um destino construído sobre outro, como {encrypted}, escolhe esse destino pelo nome numa lista. {union} e {combine} acrescentam os seus uma linha de cada vez.',
   'new.change.targetId': 'O formulário de um destino guardado mostra o seu {id}, com um botão que o copia.',
+  'new.change.jobPageMore': '{more} na página de uma tarefa tem as mesmas ações que o seu cartão. {preview} e {check} começam ali mesmo, na página.',
   'new.change.systemLog': 'O cartão {systemLog} no mosaico {general} e nas definições do telemóvel mostra o que correu mal fora das execuções, como os erros do rclone e os servidores que o ArrowLoop não conseguiu alcançar.',
   'new.change.historyKeep': 'O cartão {history} no mosaico {general} mantém as execuções durante os dias que quiseres, ou para sempre, e cada tarefa mantém a sua última execução.',
   'new.change.runTransferred': '{history}, a página de uma tarefa e as linhas de execução no telemóvel mostram quanto cada execução transferiu, por exemplo 2,2 GB.',

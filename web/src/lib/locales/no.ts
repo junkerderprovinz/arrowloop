@@ -1992,6 +1992,7 @@ const no: Translations = {
   'new.change.atStartDue': 'Innstillingen {option} for en jobb kan være {due}: Da kjører jobben ved start bare hvis tidsplanen kom til mens programmet var av, og en start kjører ikke lenger alle lange jobber etter hverandre.',
   'new.change.wrapPick': 'Et mål som bygger på et annet, for eksempel {encrypted}, velger det målet etter navn fra en liste. {union} og {combine} legger til sine mål én rad om gangen.',
   'new.change.targetId': 'Skjemaet for et lagret mål viser {id}, med en knapp som kopierer den.',
+  'new.change.jobPageMore': '{more} på en jobbs side har de samme handlingene som jobbkortet. {preview} og {check} starter rett på siden.',
   'new.change.systemLog': 'Kortet {systemLog} på flisen {general} og i telefonens innstillinger viser hva som gikk galt utenfor kjøringene, for eksempel feil fra rclone og servere ArrowLoop ikke nådde.',
   'new.change.historyKeep': 'Kortet {history} på flisen {general} beholder kjøringer så mange dager du vil, eller for alltid, og hver jobb beholder sin siste kjøring.',
   'new.change.runTransferred': '{history}, siden til en jobb og kjøringslinjene på telefonen viser hvor mye hver kjøring overførte, for eksempel 2,2 GB.',
