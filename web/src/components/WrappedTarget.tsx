@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { copyText } from '@glimstone/core'
 
 import { Button } from '../lib/glimstone/Button'
 import { InfoBubble } from '../lib/glimstone/InfoBubble'
@@ -185,7 +186,8 @@ export function TargetId({ id }: { id: string }) {
           title={copied ? t('targets.copied') : t('targets.copyId')}
           labelKey={copied ? 'targets.copied' : 'targets.copyId'}
           onClick={() => {
-            void navigator.clipboard?.writeText(id).then(() => {
+            void copyText(id).then((done) => {
+              if (!done) return
               setCopied(true)
               setTimeout(() => setCopied(false), 1500)
             })
