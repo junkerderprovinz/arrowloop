@@ -1,0 +1,1 @@
+Der Bildschirm eines Auftrags hat ein Mehr-Menü mit denselben Aktionen wie seine Karte in der Auftragsliste, darunter Duplikate suchen, das am Handy neu ist. Ein noch nicht gespeicherter Auftrag zeigt sie ausgegraut mit einem kurzen Hinweis. Ein komprimiertes Ziel ohne Kompressionsstufe bekommt die übliche Stufe seines Modus und hängt nicht mehr.

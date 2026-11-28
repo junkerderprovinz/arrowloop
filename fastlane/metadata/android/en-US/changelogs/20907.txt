@@ -1,0 +1,1 @@
+A job's screen has a More menu with the same actions as its card in the job list, including Find duplicates, which is new on the phone. A job that is not saved yet shows them greyed out with a short note. A Compressed target without a level gets the usual level for its mode and no longer hangs.

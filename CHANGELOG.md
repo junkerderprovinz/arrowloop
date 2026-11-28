@@ -8,6 +8,23 @@ The full notes for each release are in
 [`.github/release-notes/`](.github/release-notes/) and on the
 [releases page](https://github.com/junkerderprovinz/arrowloop/releases).
 
+## 2.9.7 - 2026-11-28
+
+ArrowLoop 2.9.7 offers the Jobs page's actions in the More menu inside a job, on the web and on the phone, stops a Compressed target without a level from hanging, and makes the copy buttons work over plain http.
+
+## ✨ Added
+
+- **Preview and the other job actions inside a job.** The More menu on a job's own page offers what the one on the Jobs page does: Duplicate, Preview, Check this job, Find duplicates, Open this job's trash and Remove, in the same groups. Preview and Check this job start right there in their cards. Both menus come from one list, so they stay alike. The phone's job screen has the same More menu, Find duplicates is new on the phone, and a job that is not saved yet shows these actions greyed out with a short note. Thanks to @danpeig for the idea ([#298](https://github.com/junkerderprovinz/arrowloop/issues/298)).
+
+## 🐛 Fixed
+
+- **A Compressed target without a level no longer hangs.** rclone opened such a target at level 0, so zstd waited forever on the first file it could compress and gzip stored everything uncompressed. A target without a level now gets the usual one for its mode, and a level the mode cannot take stops the run with a message naming the range. Thanks to @jnl-jj for the report ([#297](https://github.com/junkerderprovinz/arrowloop/issues/297)).
+- **Copy buttons work when the web interface is opened over plain http.** Browsers only hand out the clipboard on https or localhost, so opened by its LAN address, as the Unraid WebUI link does, Copy the ID and the other copy buttons did nothing. They now fall back to the browser's older copy command: the rclone ID, a drive's job path, the docker run line, the pairing words and the donation addresses. Thanks to @danpeig for the report ([#299](https://github.com/junkerderprovinz/arrowloop/issues/299)).
+
+## 🌐 Translations
+
+- **The note in the menu of a job not saved yet, in all 42 languages.**
+
 ## 2.9.6 - 2026-11-27
 
 ArrowLoop 2.9.6 picks the target under an Encrypted or Compressed target from your saved targets, and fixes FTP targets that list hidden files and installs whose first start was cut off.

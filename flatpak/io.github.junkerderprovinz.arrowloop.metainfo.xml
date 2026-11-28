@@ -79,6 +79,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="2.9.7" date="2026-11-28">
+      <description>
+        <p>ArrowLoop 2.9.7 offers the Jobs page's actions in the More menu inside a job, on the web and on the phone, stops a Compressed target without a level from hanging, and makes the copy buttons work over plain http.</p>
+      </description>
+      <url type="details">https://github.com/junkerderprovinz/arrowloop/releases/tag/v2.9.7</url>
+    </release>
     <release version="2.9.6" date="2026-11-27">
       <description>
         <p>ArrowLoop 2.9.6 picks the target under an Encrypted or Compressed target from your saved targets, and fixes FTP targets that list hidden files and installs whose first start was cut off.</p>
