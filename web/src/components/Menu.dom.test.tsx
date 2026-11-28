@@ -55,4 +55,23 @@ describe('a menu', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(document.activeElement).toBe(more)
   })
+
+  it('draws a line between groups that the arrow keys step over', () => {
+    const none = () => undefined
+    render(
+      <Menu
+        label="More"
+        labelKey="list.more"
+        items={[
+          { label: 'Duplicate', labelKey: 'edit.duplicate', onSelect: none },
+          '-',
+          { label: 'Remove', labelKey: 'edit.remove', onSelect: none },
+        ]}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'More' }))
+    expect(screen.getAllByRole('separator')).toHaveLength(1)
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'ArrowDown' })
+    expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Remove' }))
+  })
 })

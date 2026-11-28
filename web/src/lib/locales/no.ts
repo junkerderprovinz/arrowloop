@@ -2163,6 +2163,7 @@ const no: Translations = {
   'job.usual': 'Vanlig kjøring',
   'job.checkCard': 'Sjekk',
   'job.dupesCard': 'Duplikater',
+  'job.saveFirst': 'Tilgjengelig når jobben er lagret.',
   'job.heldCard': 'Tilbakeholdt kjøring',
   'job.runCard': 'Kjøring',
   'job.usual.deleted': 'Slettede filer per kjøring: {low} til {high}',

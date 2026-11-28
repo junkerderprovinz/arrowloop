@@ -335,6 +335,16 @@ export interface Storage {
   unlisted: Backend[];
 }
 
+/** Identical files on one side of a job. */
+export interface Duplicates {
+  groups: { hash: string; size: number; paths: string[]; wasted: number }[];
+  /** What deleting the extra copies would return. */
+  wasted: number;
+  scanned: number;
+  /** Candidates the target refused to hash, which leave the answer incomplete. */
+  unhashable: number;
+}
+
 export interface Bin {
   job: string;
   side: string;
@@ -587,6 +597,8 @@ export const api = {
   plan: (job: string) => call<Plan>(`/api/jobs/${name(job)}/plan`),
   check: (job: string) => call<CheckReport>(`/api/jobs/${name(job)}/check`, { method: "POST" }),
   verify: (job: string) => call<VerifyReport>(`/api/jobs/${name(job)}/verify`),
+  /** Not across both sides, because a job's two sides are supposed to match. */
+  duplicates: (job: string, side: "left" | "right") => call<Duplicates>(`/api/jobs/${name(job)}/duplicates/${side}`),
   forgetState: (job: string) => call<void>(`/api/jobs/${name(job)}/state`, { method: "DELETE" }),
 
   trash: (job: string, side: string) => call<Bin>(`/api/jobs/${name(job)}/trash/${side}`),

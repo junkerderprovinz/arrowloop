@@ -22,6 +22,7 @@ const learning = vi.fn(() => Promise.resolve([] as JobLearning[]))
 const checkJob = vi.fn((_name: string) => Promise.resolve({ ok: true, findings: [] }))
 const log = vi.fn(() => Promise.resolve([] as unknown[]))
 const history = vi.fn(() => Promise.resolve([] as Run[]))
+const plan = vi.fn((_name: string) => new Promise(() => undefined))
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -37,6 +38,7 @@ vi.mock('../lib/api', () => ({
     historyStats: () => Promise.reject(new Error('none')),
     forgetJobState: (name: string) => forgetJobState(name),
     checkJob: (name: string) => checkJob(name),
+    plan: (name: string) => plan(name),
     verifyJob: () => Promise.resolve({ findings: [], truncated: false }),
     run: () => Promise.resolve({}),
     stopJob: () => Promise.resolve({ stopped: true }),
@@ -161,6 +163,30 @@ describe('a job page', () => {
     await waitFor(() => expect(checkJob).toHaveBeenCalledWith('photos'))
     expect(window.location.search).toBe('')
     window.history.replaceState(null, '', '/')
+  })
+
+  it('previews the job from More in its own card', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Preview' }))
+    await waitFor(() => expect(plan).toHaveBeenCalledWith('photos'))
+  })
+
+  it('checks the job from More in its own card', async () => {
+    checkJob.mockClear()
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Check this job' }))
+    await waitFor(() => expect(checkJob).toHaveBeenCalledWith('photos'))
+  })
+
+  it('takes Find duplicates from More to its card, ready to search a side', async () => {
+    page()
+    fireEvent.click(await screen.findByRole('button', { name: 'More' }))
+    fireEvent.click(within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Find duplicates' }))
+    await waitFor(() =>
+      expect(document.activeElement?.textContent?.trim()).toBe('Find duplicates on the left side'),
+    )
   })
 
   it('has a card for each thing it does, none of them folded', async () => {

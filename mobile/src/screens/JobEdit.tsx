@@ -6,6 +6,9 @@ import { Field, LinesField, NumberField, Refusal, TimeField } from "../fields";
 import { ChoiceRow, Dropdown } from "../choiceRow";
 import { FolderPicker } from "../FolderPicker";
 import { JobLive } from "./JobLive";
+import { duplicateJob } from "./Jobs";
+import { CardMenu } from "../CardMenu";
+import { jobMenu } from "../jobMenu";
 import { brandTile, Glyph, ProviderMark } from "../glyphs";
 import { AccessNotice, tellAfterSaving, useFileAccess } from "../fileAccess";
 import { useT, type T } from "../i18n";
@@ -255,6 +258,9 @@ export function JobEdit() {
   // which writes itself, says so at once, since nothing else would.
   const [tried, setTried] = useState(false);
   const scroll = usePageScroll();
+  const liveRef = useRef<View>(null);
+  // Counts the checks asked for, starting at one when the job list asked for it.
+  const [checks, setChecks] = useState(route.params && "check" in route.params && route.params.check ? 1 : 0);
   const switchRef = useRef<View>(null);
   const nameRef = useRef<View>(null);
   const leftRef = useRef<View>(null);
@@ -316,6 +322,32 @@ export function JobEdit() {
   if (!job) return <Empty title={t("jobs.historyLoading")} detail={error || undefined} />;
 
   const [upper, lower] = sidePair(job.left, job.right, t);
+
+  // A job not saved yet shows the menu too, every action disabled, so its
+  // place is known before it can work.
+  const saved = editing ? (savedAs.current ?? editing) : undefined;
+  const menu = jobMenu(
+    t,
+    [upper, lower],
+    saved
+      ? {
+          duplicate: () =>
+            void duplicateJob(saved, t).then(
+              (copy) => copy && nav.push("JobDetail", { name: copy }),
+              (e: Error) => setError(e.message),
+            ),
+          preview: () => nav.navigate("Plan", { name: saved }),
+          check: () => {
+            scroll.reveal(liveRef);
+            setChecks((n) => n + 1);
+          },
+          dupes: () => nav.navigate("Dupes", { name: saved, places: [upper, lower] }),
+          trash: (side, place) => nav.navigate("Trash", { name: saved, side, place }),
+          remove,
+        }
+      : null,
+    "screen",
+  );
 
   const follows = !INHERITED.some((setting) => owns(job, setting));
   // What the job runs with: its own value, or the default's while it follows.
@@ -390,7 +422,15 @@ export function JobEdit() {
 
   return (
     <Page scroll={scroll}>
-      {editing ? <JobLive name={editing} check={route.params && "check" in route.params ? route.params.check : false} /> : null}
+      <View style={styles.top}>
+        <CardMenu items={menu} note={saved ? undefined : t("job.saveFirst")} />
+      </View>
+
+      {saved ? (
+        <View ref={liveRef} collapsable={false}>
+          <JobLive name={saved} checks={checks} />
+        </View>
+      ) : null}
 
       {/* Before the settings it decides about. It waits for the global
           values, since turning it off copies them into the job. */}
@@ -1364,6 +1404,7 @@ export function bothSidesOnePlace(left: string, right: string): boolean {
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: space.sm },
+  top: { flexDirection: "row", justifyContent: "flex-end" },
   sideHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   sideName: { flex: 1, fontSize: text.title, fontWeight: "600" },
   stack: { gap: space.sm },

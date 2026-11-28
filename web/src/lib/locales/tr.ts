@@ -2163,6 +2163,7 @@ const tr: Translations = {
   'job.usual': 'Olağan çalıştırma',
   'job.checkCard': 'Denetim',
   'job.dupesCard': 'Kopyalar',
+  'job.saveFirst': 'İş kaydedildikten sonra kullanılabilir.',
   'job.heldCard': 'Durdurulan çalıştırma',
   'job.runCard': 'Çalıştırma',
   'job.usual.deleted': 'Çalıştırma başına silinen dosya: {low} ile {high} arası',

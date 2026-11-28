@@ -2163,6 +2163,7 @@ const fa: Translations = {
   'job.usual': 'اجرای معمول',
   'job.checkCard': 'بررسی',
   'job.dupesCard': 'تکراری‌ها',
+  'job.saveFirst': 'پس از ذخیرهٔ کار در دسترس است.',
   'job.heldCard': 'اجرای نگه داشته‌شده',
   'job.runCard': 'اجرا',
   'job.usual.deleted': 'فایل‌های حذف‌شده در هر اجرا: {low} تا {high}',

@@ -22,6 +22,8 @@ export type JobsStack = {
   Anomalies: { job?: string } | undefined;
   /** `place` is the side's name, for the title. */
   Trash: { name: string; side: "left" | "right"; place: string };
+  /** `places` names the two sides, for their buttons. */
+  Dupes: { name: string; places: [string, string] };
 };
 
 export type ConflictsStack = {

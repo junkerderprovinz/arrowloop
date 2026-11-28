@@ -2163,6 +2163,7 @@ const fi: Translations = {
   'job.usual': 'Tavallinen ajo',
   'job.checkCard': 'Tarkistus',
   'job.dupesCard': 'Kaksoiskappaleet',
+  'job.saveFirst': 'Käytettävissä, kun työ on tallennettu.',
   'job.heldCard': 'Pysäytetty ajo',
   'job.runCard': 'Ajo',
   'job.usual.deleted': 'Poistettuja tiedostoja ajoa kohden: {low} ja {high} välillä',

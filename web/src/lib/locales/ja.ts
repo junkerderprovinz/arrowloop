@@ -2163,6 +2163,7 @@ const ja: Translations = {
   'job.usual': 'いつもの実行',
   'job.checkCard': '点検',
   'job.dupesCard': '重複',
+  'job.saveFirst': 'ジョブを保存すると使えます。',
   'job.heldCard': '保留中の実行',
   'job.runCard': '実行',
   'job.usual.deleted': '1 回の実行で削除するファイル: {low}〜{high}',

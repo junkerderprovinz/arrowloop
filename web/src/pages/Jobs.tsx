@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type Keyboard
 
 import { Empty, Stack } from '../components/Shell'
 import { IconAction } from '../components/IconAction'
-import { Menu, type MenuItem } from '../components/Menu'
+import { Menu, type MenuEntry } from '../components/Menu'
 import { useNarrow } from '../lib/narrow'
 import { DirectionGlyph, DirectionMark } from '../components/Direction'
 import { IconAdd, IconGrip, IconPause, IconPlay } from '../components/glyphs'
@@ -26,6 +26,7 @@ import { useGoTo } from '../lib/goTo'
 import { useT } from '../lib/i18n'
 import { jobCardPlace, type JobPageCard } from '../lib/jobCards'
 import { jobStatus } from '../lib/jobList'
+import { jobMenu } from '../lib/jobMenu'
 import { byJobOrder, stepJob } from '../lib/jobOrder'
 import { useJobView } from '../lib/jobView'
 import { useOpenJob } from '../lib/openJob'
@@ -145,28 +146,19 @@ export function Jobs({
   // here; the preview, the check and the duplicate search are cards on the
   // job's page and open it at theirs. Only a job in the configuration file
   // can be edited, copied or removed.
-  function moreFor(name: string): MenuItem[] {
+  function moreFor(name: string): MenuEntry[] {
     const at = config.jobs?.findIndex((raw) => raw.name === name) ?? -1
     const card = (which: JobPageCard) => () => navigate(jobCardPlace(name, which))
-    const saved: MenuItem[] =
-      at === -1
-        ? []
-        : [
-            { label: t('job.edit'), labelKey: 'job.edit', onSelect: () => setEditing({ at, added: false }) },
-            {
-              label: t('edit.duplicate'),
-              labelKey: 'edit.duplicate',
-              onSelect: () => setEditing({ at: config.duplicate(at), added: true }),
-            },
-          ]
-    return [
-      ...saved,
-      { label: t('jobs.preview'), labelKey: 'jobs.preview', onSelect: card('preview') },
-      { label: t('jobs.check'), labelKey: 'jobs.check', onSelect: card('check') },
-      { label: t('jobs.dupes'), labelKey: 'jobs.dupes', onSelect: card('dupes') },
-      { label: t('edit.openTrash'), labelKey: 'edit.openTrash', onSelect: () => goTo({ tab: 'trash', job: name }) },
-      ...(at === -1 ? [] : [{ label: t('edit.remove'), labelKey: 'edit.remove' as const, onSelect: () => setRemoving(at) }]),
-    ]
+    const saved = at !== -1
+    return jobMenu(t, {
+      edit: saved ? () => setEditing({ at, added: false }) : undefined,
+      duplicate: saved ? () => setEditing({ at: config.duplicate(at), added: true }) : undefined,
+      preview: card('preview'),
+      check: card('check'),
+      dupes: card('dupes'),
+      trash: () => goTo({ tab: 'trash', job: name }),
+      remove: saved ? () => setRemoving(at) : undefined,
+    })
   }
 
   return (
@@ -285,7 +277,7 @@ type JobItemProps = {
   /** Asks for the jobs again once the engine has answered Run now or Cancel. */
   onAnswered: () => void
   /** The job page's further actions. */
-  more: MenuItem[]
+  more: MenuEntry[]
   /** The drag class: lifted, landing, making room or none. */
   look: string
   /** A press on the handle, which may become a drag. */
@@ -435,7 +427,7 @@ function JobRow({
   const narrow = useNarrow()
   const status = jobStatus(job, { held: !!held, conflict, notes: !!note })
   const startStop = useStartStop(job, onAnswered)
-  const items: MenuItem[] = canPause
+  const items: MenuEntry[] = canPause
     ? [
         {
           label: job.disabled ? t('jobs.resume') : t('jobs.pause'),

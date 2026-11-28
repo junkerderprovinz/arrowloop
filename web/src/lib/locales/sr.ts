@@ -2163,6 +2163,7 @@ const sr: Translations = {
   'job.usual': 'Уобичајено покретање',
   'job.checkCard': 'Провера',
   'job.dupesCard': 'Дупликати',
+  'job.saveFirst': 'Доступно када се посао сачува.',
   'job.heldCard': 'Заустављено покретање',
   'job.runCard': 'Покретање',
   'job.usual.deleted': 'Обрисане датотеке по покретању: од {low} до {high}',

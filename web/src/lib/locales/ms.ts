@@ -2163,6 +2163,7 @@ const ms: Translations = {
   'job.usual': 'Larian biasa',
   'job.checkCard': 'Semakan',
   'job.dupesCard': 'Pendua',
+  'job.saveFirst': 'Tersedia setelah tugas disimpan.',
   'job.heldCard': 'Larian ditahan',
   'job.runCard': 'Larian',
   'job.usual.deleted': 'Fail dipadam setiap larian: {low} hingga {high}',

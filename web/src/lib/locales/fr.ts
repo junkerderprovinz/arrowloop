@@ -2163,6 +2163,7 @@ const fr: Translations = {
   'job.usual': 'Exécution habituelle',
   'job.checkCard': 'Vérification',
   'job.dupesCard': 'Doublons',
+  'job.saveFirst': 'Disponible une fois la tâche enregistrée.',
   'job.heldCard': 'Exécution retenue',
   'job.runCard': 'Exécution',
   'job.usual.deleted': 'Fichiers supprimés par exécution : de {low} à {high}',

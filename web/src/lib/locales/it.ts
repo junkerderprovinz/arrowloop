@@ -2163,6 +2163,7 @@ const it: Translations = {
   'job.usual': 'Esecuzione abituale',
   'job.checkCard': 'Controllo',
   'job.dupesCard': 'Duplicati',
+  'job.saveFirst': 'Disponibile dopo aver salvato il lavoro.',
   'job.heldCard': 'Esecuzione sospesa',
   'job.runCard': 'Esecuzione',
   'job.usual.deleted': 'File eliminati per esecuzione: da {low} a {high}',

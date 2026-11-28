@@ -2163,6 +2163,7 @@ const ro: Translations = {
   'job.usual': 'Rulare obișnuită',
   'job.checkCard': 'Verificare',
   'job.dupesCard': 'Duplicate',
+  'job.saveFirst': 'Disponibil după ce sarcina este salvată.',
   'job.heldCard': 'Rulare oprită',
   'job.runCard': 'Rulare',
   'job.usual.deleted': 'Fișiere șterse pe rulare: între {low} și {high}',

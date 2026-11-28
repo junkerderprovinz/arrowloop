@@ -2163,6 +2163,7 @@ const gl: Translations = {
   'job.usual': 'Execución habitual',
   'job.checkCard': 'Comprobación',
   'job.dupesCard': 'Duplicados',
+  'job.saveFirst': 'Dispoñible cando a tarefa estea gardada.',
   'job.heldCard': 'Execución retida',
   'job.runCard': 'Execución',
   'job.usual.deleted': 'Ficheiros borrados por execución: de {low} a {high}',

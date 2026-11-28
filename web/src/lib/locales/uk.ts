@@ -2163,6 +2163,7 @@ const uk: Translations = {
   'job.usual': 'Звичайний запуск',
   'job.checkCard': 'Перевірка',
   'job.dupesCard': 'Дублікати',
+  'job.saveFirst': 'Доступно після збереження завдання.',
   'job.heldCard': 'Призупинений запуск',
   'job.runCard': 'Запуск',
   'job.usual.deleted': 'Видалено файлів за запуск: від {low} до {high}',

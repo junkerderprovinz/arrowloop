@@ -2163,6 +2163,7 @@ const id: Translations = {
   'job.usual': 'Proses biasa',
   'job.checkCard': 'Pemeriksaan',
   'job.dupesCard': 'Duplikat',
+  'job.saveFirst': 'Tersedia setelah tugas disimpan.',
   'job.heldCard': 'Proses ditahan',
   'job.runCard': 'Proses',
   'job.usual.deleted': 'File yang dihapus per proses: {low} sampai {high}',

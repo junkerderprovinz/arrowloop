@@ -2163,6 +2163,7 @@ const lt: Translations = {
   'job.usual': 'Įprastas paleidimas',
   'job.checkCard': 'Patikra',
   'job.dupesCard': 'Dublikatai',
+  'job.saveFirst': 'Bus galima, kai užduotis bus įrašyta.',
   'job.heldCard': 'Sustabdytas paleidimas',
   'job.runCard': 'Paleidimas',
   'job.usual.deleted': 'Ištrinta failų per paleidimą: nuo {low} iki {high}',

@@ -2163,6 +2163,7 @@ const zh: Translations = {
   'job.usual': '常规运行',
   'job.checkCard': '检查',
   'job.dupesCard': '重复文件',
+  'job.saveFirst': '保存任务后可用。',
   'job.heldCard': '暂扣的运行',
   'job.runCard': '运行',
   'job.usual.deleted': '每次运行删除的文件：{low} 到 {high}',

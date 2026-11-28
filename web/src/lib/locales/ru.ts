@@ -2163,6 +2163,7 @@ const ru: Translations = {
   'job.usual': 'Обычный запуск',
   'job.checkCard': 'Проверка',
   'job.dupesCard': 'Дубликаты',
+  'job.saveFirst': 'Доступно после сохранения задания.',
   'job.heldCard': 'Приостановленный запуск',
   'job.runCard': 'Запуск',
   'job.usual.deleted': 'Удалено файлов за запуск: от {low} до {high}',

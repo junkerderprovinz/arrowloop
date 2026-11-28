@@ -2163,6 +2163,7 @@ const ar: Translations = {
   'job.usual': 'التشغيل المعتاد',
   'job.checkCard': 'الفحص',
   'job.dupesCard': 'الملفات المكررة',
+  'job.saveFirst': 'متاح بعد حفظ المهمة.',
   'job.heldCard': 'تشغيل موقوف',
   'job.runCard': 'التشغيل',
   'job.usual.deleted': 'الملفات المحذوفة في كل تشغيل: {low} إلى {high}',

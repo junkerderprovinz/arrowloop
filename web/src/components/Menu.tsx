@@ -18,6 +18,9 @@ export type MenuItem = {
   disabled?: boolean
 }
 
+/** An item, or "-" for the line between two groups. */
+export type MenuEntry = MenuItem | '-'
+
 /**
  * A button that opens a short list of further actions, the rare and the
  * dangerous ones a page keeps out of its way. The list is portalled to the
@@ -35,7 +38,7 @@ export function Menu({
 }: {
   label: string
   labelKey: TranslationKey
-  items: MenuItem[]
+  items: MenuEntry[]
   hueIndex?: number
   glyph?: ReactNode
   /** The key height, for a menu standing among the page actions. */
@@ -76,7 +79,7 @@ export function ContextMenu({
   onClose,
 }: {
   label: string
-  items: MenuItem[]
+  items: MenuEntry[]
   at: { x: number; y: number }
   onClose: () => void
 }) {
@@ -91,7 +94,7 @@ function MenuPanel({
   onClose,
 }: {
   label: string
-  items: MenuItem[]
+  items: MenuEntry[]
   anchor?: RefObject<HTMLElement | null>
   point?: { x: number; y: number }
   onClose: () => void
@@ -182,27 +185,31 @@ function MenuPanel({
       }`}
       style={{ left: at?.left ?? -9999, top: at?.top ?? -9999, ...(hue.style ?? {}) } as CSSProperties}
     >
-      {items.map((item) => (
-        <button
-          key={item.labelKey}
-          type="button"
-          role="menuitem"
-          disabled={item.disabled}
-          onClick={() => {
-            // The item goes with the list, so a window it opens would find no
-            // control to hand the focus back to when it closes.
-            anchor?.current?.focus({ preventScroll: true })
-            onClose()
-            item.onSelect()
-          }}
-          className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-body text-carbon-textSub transition-colors hover:bg-hover hover:text-carbon-text focus-visible:bg-hover focus-visible:text-carbon-text disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <span className="flex w-4 shrink-0 justify-center text-carbon-textMuted" aria-hidden>
-            {glyphFor(item.labelKey)}
-          </span>
-          {item.label}
-        </button>
-      ))}
+      {items.map((item, i) =>
+        item === '-' ? (
+          <div key={`-${i}`} role="separator" className="glim-menu-sep" />
+        ) : (
+          <button
+            key={item.labelKey}
+            type="button"
+            role="menuitem"
+            disabled={item.disabled}
+            onClick={() => {
+              // The item goes with the list, so a window it opens would find no
+              // control to hand the focus back to when it closes.
+              anchor?.current?.focus({ preventScroll: true })
+              onClose()
+              item.onSelect()
+            }}
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-start text-body text-carbon-textSub transition-colors hover:bg-hover hover:text-carbon-text focus-visible:bg-hover focus-visible:text-carbon-text disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <span className="flex w-4 shrink-0 justify-center text-carbon-textMuted" aria-hidden>
+              {glyphFor(item.labelKey)}
+            </span>
+            {item.label}
+          </button>
+        ),
+      )}
     </div>,
     document.body,
   )

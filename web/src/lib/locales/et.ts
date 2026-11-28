@@ -2163,6 +2163,7 @@ const et: Translations = {
   'job.usual': 'Tavaline käivitus',
   'job.checkCard': 'Kontroll',
   'job.dupesCard': 'Duplikaadid',
+  'job.saveFirst': 'Saadaval, kui töö on salvestatud.',
   'job.heldCard': 'Peatatud käivitus',
   'job.runCard': 'Käivitus',
   'job.usual.deleted': 'Kustutatud faile käivituse kohta: {low} kuni {high}',

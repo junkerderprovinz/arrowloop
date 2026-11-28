@@ -2163,6 +2163,7 @@ const lv: Translations = {
   'job.usual': 'Parastā palaišana',
   'job.checkCard': 'Pārbaude',
   'job.dupesCard': 'Dublikāti',
+  'job.saveFirst': 'Pieejams, kad uzdevums ir saglabāts.',
   'job.heldCard': 'Apturēta palaišana',
   'job.runCard': 'Palaišana',
   'job.usual.deleted': 'Izdzēsti faili vienā palaišanā: no {low} līdz {high}',

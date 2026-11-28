@@ -2163,6 +2163,7 @@ const hr: Translations = {
   'job.usual': 'Uobičajeno pokretanje',
   'job.checkCard': 'Provjera',
   'job.dupesCard': 'Duplikati',
+  'job.saveFirst': 'Dostupno nakon što se zadatak spremi.',
   'job.heldCard': 'Zadržano pokretanje',
   'job.runCard': 'Pokretanje',
   'job.usual.deleted': 'Izbrisane datoteke po pokretanju: {low} do {high}',

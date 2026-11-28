@@ -2163,6 +2163,7 @@ const cs: Translations = {
   'job.usual': 'Obvyklý běh',
   'job.checkCard': 'Kontrola',
   'job.dupesCard': 'Duplicity',
+  'job.saveFirst': 'K dispozici, jakmile bude úloha uložena.',
   'job.heldCard': 'Zastavený běh',
   'job.runCard': 'Běh',
   'job.usual.deleted': 'Smazané soubory na běh: {low} až {high}',

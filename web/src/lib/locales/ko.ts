@@ -2163,6 +2163,7 @@ const ko: Translations = {
   'job.usual': '평소 실행',
   'job.checkCard': '점검',
   'job.dupesCard': '중복',
+  'job.saveFirst': '작업을 저장하면 사용할 수 있습니다.',
   'job.heldCard': '보류된 실행',
   'job.runCard': '실행',
   'job.usual.deleted': '실행당 삭제한 파일: {low}~{high}',
